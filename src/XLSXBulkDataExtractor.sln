@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.202
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XLSXBulkDataExtractor", "XLSXBulkDataExtractor\XLSXBulkDataExtractor.csproj", "{BEE5A258-FAC4-47D1-914E-AD643B0F450F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5DA11B0B-52B6-4726-A9B9-3DBB7B49FD6F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XLSXBulkDataExtractor.BL.Tests", "Tests\XLSXBulkDataExtractor.BL.Tests\XLSXBulkDataExtractor.BL.Tests.csproj", "{CA83045B-C41B-42BF-87E4-504B004E25EC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XLSXBulkDataExtractor.BL", "XLSXBulkDataExtractor.BL\XLSXBulkDataExtractor.BL.csproj", "{92FECE06-6F32-47B9-B541-0E42BCD161D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMHelpers", "MVVMHelpers\MVVMHelpers.csproj", "{7DD11FFC-1888-4038-9998-914028577C83}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XLSXBulkDataExtractor.Common", "XLSXBulkDataExtractor.Common\XLSXBulkDataExtractor.Common.csproj", "{2835F803-72DD-4943-81B2-9CC3F55F8E1B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BEE5A258-FAC4-47D1-914E-AD643B0F450F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEE5A258-FAC4-47D1-914E-AD643B0F450F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEE5A258-FAC4-47D1-914E-AD643B0F450F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEE5A258-FAC4-47D1-914E-AD643B0F450F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA83045B-C41B-42BF-87E4-504B004E25EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA83045B-C41B-42BF-87E4-504B004E25EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA83045B-C41B-42BF-87E4-504B004E25EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA83045B-C41B-42BF-87E4-504B004E25EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92FECE06-6F32-47B9-B541-0E42BCD161D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92FECE06-6F32-47B9-B541-0E42BCD161D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92FECE06-6F32-47B9-B541-0E42BCD161D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92FECE06-6F32-47B9-B541-0E42BCD161D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7DD11FFC-1888-4038-9998-914028577C83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DD11FFC-1888-4038-9998-914028577C83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DD11FFC-1888-4038-9998-914028577C83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DD11FFC-1888-4038-9998-914028577C83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2835F803-72DD-4943-81B2-9CC3F55F8E1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2835F803-72DD-4943-81B2-9CC3F55F8E1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2835F803-72DD-4943-81B2-9CC3F55F8E1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2835F803-72DD-4943-81B2-9CC3F55F8E1B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CA83045B-C41B-42BF-87E4-504B004E25EC} = {5DA11B0B-52B6-4726-A9B9-3DBB7B49FD6F}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2B808047-B7BC-40D1-9D83-BF8924BC6DFD}
+	EndGlobalSection
+EndGlobal
