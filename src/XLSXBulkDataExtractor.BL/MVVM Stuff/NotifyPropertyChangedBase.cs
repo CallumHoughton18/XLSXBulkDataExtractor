@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace XLSXBulkDataExtractor.BL.ViewModels
 {
-    public abstract class BaseViewModel : INotifyPropertyChanged
+    public abstract class NotifyPropertyChangedBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string name)

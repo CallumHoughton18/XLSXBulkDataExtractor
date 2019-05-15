@@ -8,10 +8,14 @@ using XLSXBulkDataExtractor.BL.MVVM_Extensions;
 using XLSXBulkDataExtractor.Common;
 using System.Windows;
 using XLSXBulkDataExtractor.BL.Interfaces;
+using XLSXDataExtractor;
+using System.Linq;
+using XLSXDataExtractor.Models;
+using System.Collections.Generic;
 
 namespace XLSXBulkDataExtractor.BL.ViewModels
 {
-    public class DataRetrievalViewModel : BaseViewModel
+    public class DataRetrievalViewModel : NotifyPropertyChangedBase
     {
         private IIOService _iioService;
 
@@ -97,15 +101,12 @@ namespace XLSXBulkDataExtractor.BL.ViewModels
                 var chosenPath = SetOutputDirectory();
 
                 if (!string.IsNullOrWhiteSpace(chosenPath)) OutputDirectory = chosenPath;
-            }
-            );
-
-
+            });
         }
 
         public void AddNewEmptyExtractionRequest()
         {
-            DataRetrievalRequests.Add(new DataRetrievalRequest(0,0,""));
+            DataRetrievalRequests.Add(new DataRetrievalRequest());
         }
 
         private void DeleteExtractionRequest(DataRetrievalRequest dataRetrievalRequest)
@@ -123,13 +124,43 @@ namespace XLSXBulkDataExtractor.BL.ViewModels
 
         private void BeginExtraction(DirectoryInfo documentsDirectory, DataOutputFormat dataOutputFormat)
         {
+            //Possibly want this to be async, so the program doesn't lock up on a big extraction
+            var validExtensions = new string[] { "xlsx", "xlsm" };
             if (documentsDirectory == null) throw new ArgumentNullException("fileInfo", "Cannot be null");
+            IEnumerable<IEnumerable<KeyValuePair<string, object>>> extractedDataCol = null;
 
             foreach (var document in documentsDirectory.GetFiles())
             {
-                //use XLSX_Data_Extractor package to generate package
+                if (validExtensions.Contains(Path.GetExtension(document.FullName).ToLower()))
+                {
+                    var dataExtractor = new DataExtractor(document.FullName);
+                    var extractionRequests = DataRetrievalRequestCollectionToExtractionRequestCollection(DataRetrievalRequests);
+                    extractedDataCol = dataExtractor.RetrieveDataCollectionFromAllWorksheets<object>(extractionRequests);
+                }
+            }
+
+            if (extractedDataCol != null)
+            {
+                switch (dataOutputFormat)
+                {
+                    case DataOutputFormat.XLSX:
+                        var generatedWorksheet = ExtractedDataConverter.ConvertToWorksheet(extractedDataCol);
+                        break;
+                    case DataOutputFormat.CSV:
+                        var generatedCSV = ExtractedDataConverter.ConvertToCSV(extractedDataCol);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
+        private IEnumerable<ExtractionRequest> DataRetrievalRequestCollectionToExtractionRequestCollection(IEnumerable<DataRetrievalRequest> dataRetrievalRequestsCol)
+        {
+            foreach (var dataRetrievalRequest in dataRetrievalRequestsCol)
+            {
+                yield return new ExtractionRequest(dataRetrievalRequest.FieldName, dataRetrievalRequest.Row, dataRetrievalRequest.Column);
+            }
+        }
     }
 }
