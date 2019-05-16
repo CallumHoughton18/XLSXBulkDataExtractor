@@ -5,7 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using XLSXBulkDataExtractor.BL.Interfaces;
+using XLSXBulkDataExtractor.Common;
+using XLSXBulkDataExtractor.WPFLogic.Interfaces;
 
 namespace XLSXBulkDataExtractor.Service_Implementations
 {
@@ -22,6 +23,19 @@ namespace XLSXBulkDataExtractor.Service_Implementations
             else
             {
                 return string.Empty;
+            }
+        }
+
+        public ReturnMessage SaveText(string text, string path)
+        {
+            try
+            {
+                File.WriteAllText(path, text);
+                return new ReturnMessage(true, "");
+            }
+            catch (Exception e)
+            {
+                return new ReturnMessage(false, e.Message);
             }
         }
     }

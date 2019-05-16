@@ -2,22 +2,22 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows.Input;
-using XLSXBulkDataExtractor.BL.Globals;
-using XLSXBulkDataExtractor.BL.Models;
-using XLSXBulkDataExtractor.BL.MVVM_Extensions;
+using XLSXBulkDataExtractor.WPFLogic.Globals;
 using XLSXBulkDataExtractor.Common;
-using System.Windows;
-using XLSXBulkDataExtractor.BL.Interfaces;
+using XLSXBulkDataExtractor.WPFLogic.Interfaces;
 using XLSXDataExtractor;
 using System.Linq;
 using XLSXDataExtractor.Models;
 using System.Collections.Generic;
+using XLSXBulkDataExtractor.MVVMHelpers.MVVM_Extensions;
+using ClosedXML.Excel;
 
-namespace XLSXBulkDataExtractor.BL.ViewModels
+namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
 {
     public class DataRetrievalViewModel : NotifyPropertyChangedBase
     {
-        private IIOService _iioService;
+        private IIOService _ioService;
+        private IXLIOService _xlioService;
 
         DataRetrievalRequest _dataRetrievalRequest;
         DataRetrievalRequest SelectedDataRetrievalRequest
@@ -74,9 +74,10 @@ namespace XLSXBulkDataExtractor.BL.ViewModels
         private readonly ICommand BeginExtractionCommand;
         private readonly ICommand SetOutputDirectoryCommand;
 
-        public DataRetrievalViewModel(IIOService iioService)
+        public DataRetrievalViewModel(IIOService iioService, IXLIOService ixlioService)
         {
-            _iioService = iioService;
+            _ioService = iioService;
+            _xlioService = ixlioService;
 
             AddExtractionRequestCommand = new RelayCommand(() => AddNewEmptyExtractionRequest());
 
@@ -119,7 +120,7 @@ namespace XLSXBulkDataExtractor.BL.ViewModels
 
         private string SetOutputDirectory()
         {
-            return _iioService.ChooseFolderDialog();
+            return _ioService.ChooseFolderDialog();
         }
 
         private void BeginExtraction(DirectoryInfo documentsDirectory, DataOutputFormat dataOutputFormat)
@@ -141,17 +142,51 @@ namespace XLSXBulkDataExtractor.BL.ViewModels
 
             if (extractedDataCol != null)
             {
-                switch (dataOutputFormat)
-                {
-                    case DataOutputFormat.XLSX:
-                        var generatedWorksheet = ExtractedDataConverter.ConvertToWorksheet(extractedDataCol);
-                        break;
-                    case DataOutputFormat.CSV:
-                        var generatedCSV = ExtractedDataConverter.ConvertToCSV(extractedDataCol);
-                        break;
-                    default:
-                        break;
-                }
+                SaveExtractedData(dataOutputFormat, extractedDataCol);
+            }
+            else
+            {
+                //GUI call to say no data available.
+            }
+        }
+
+        private void SaveExtractedData(DataOutputFormat dataOutputFormat, IEnumerable<IEnumerable<KeyValuePair<string, object>>> extractedDataCol)
+        {
+            ReturnMessage succesfullySaved;
+
+            switch (dataOutputFormat)
+            {
+                case DataOutputFormat.XLSX:
+                    var generatedWorksheet = ExtractedDataConverter.ConvertToWorksheet(extractedDataCol);
+
+                    var newWorkbook = new XLWorkbook();
+                    newWorkbook.AddWorksheet(generatedWorksheet);
+                    succesfullySaved = _xlioService.SaveWorkbook(Path.Combine(OutputDirectory, "Output.xlsx"), newWorkbook);
+                    DisplaySuccessOrFailMessage(succesfullySaved);
+
+                    break;
+                case DataOutputFormat.CSV:
+                    var generatedCSV = ExtractedDataConverter.ConvertToCSV(extractedDataCol);
+                    succesfullySaved = _ioService.SaveText(generatedCSV, Path.Combine(OutputDirectory, "Output.csv"));
+                    DisplaySuccessOrFailMessage(succesfullySaved);
+
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void DisplaySuccessOrFailMessage(ReturnMessage returnMessage)
+        {
+            if (returnMessage == null) throw new ArgumentNullException("returnMessage", "cannot be null");
+
+            if (returnMessage.Success)
+            {
+                //call to GUIService to display success popup with path as messagebox
+            }
+            else
+            {
+                //call to GUIService to display fail popup with error message
             }
         }
 

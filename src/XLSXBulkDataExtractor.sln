@@ -7,9 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XLSXBulkDataExtractor", "XL
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5DA11B0B-52B6-4726-A9B9-3DBB7B49FD6F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XLSXBulkDataExtractor.BL.Tests", "Tests\XLSXBulkDataExtractor.BL.Tests\XLSXBulkDataExtractor.BL.Tests.csproj", "{CA83045B-C41B-42BF-87E4-504B004E25EC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XLSXBulkDataExtractor.BL", "XLSXBulkDataExtractor.BL\XLSXBulkDataExtractor.BL.csproj", "{92FECE06-6F32-47B9-B541-0E42BCD161D3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XLSXBulkDataExtractor.WPFLogic", "XLSXBulkDataExtractor.WPFLogic\XLSXBulkDataExtractor.WPFLogic.csproj", "{92FECE06-6F32-47B9-B541-0E42BCD161D3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMHelpers", "MVVMHelpers\MVVMHelpers.csproj", "{7DD11FFC-1888-4038-9998-914028577C83}"
 EndProject
@@ -25,10 +23,6 @@ Global
 		{BEE5A258-FAC4-47D1-914E-AD643B0F450F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BEE5A258-FAC4-47D1-914E-AD643B0F450F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BEE5A258-FAC4-47D1-914E-AD643B0F450F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CA83045B-C41B-42BF-87E4-504B004E25EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CA83045B-C41B-42BF-87E4-504B004E25EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CA83045B-C41B-42BF-87E4-504B004E25EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CA83045B-C41B-42BF-87E4-504B004E25EC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{92FECE06-6F32-47B9-B541-0E42BCD161D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{92FECE06-6F32-47B9-B541-0E42BCD161D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92FECE06-6F32-47B9-B541-0E42BCD161D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -44,9 +38,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{CA83045B-C41B-42BF-87E4-504B004E25EC} = {5DA11B0B-52B6-4726-A9B9-3DBB7B49FD6F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2B808047-B7BC-40D1-9D83-BF8924BC6DFD}

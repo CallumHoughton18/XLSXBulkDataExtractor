@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace XLSXBulkDataExtractor.BL.ViewModels
+namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
 {
     public abstract class NotifyPropertyChangedBase : INotifyPropertyChanged
     {

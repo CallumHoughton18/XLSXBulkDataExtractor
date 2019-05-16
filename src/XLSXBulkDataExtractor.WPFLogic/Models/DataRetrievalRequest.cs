@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using XLSXBulkDataExtractor.BL.ViewModels;
 
-namespace XLSXBulkDataExtractor.BL.Models
+namespace XLSXBulkDataExtractor..WPFLogic.Models
 {
     public class DataRetrievalRequest : NotifyPropertyChangedBase
     {

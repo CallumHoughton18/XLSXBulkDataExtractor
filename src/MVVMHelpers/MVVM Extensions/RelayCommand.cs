@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows.Input;
 
-namespace XLSXBulkDataExtractor.BL.MVVM_Extensions
+namespace XLSXBulkDataExtractor.MVVMHelpers.MVVM_Extensions
 {
     public class RelayCommand : ICommand
     {

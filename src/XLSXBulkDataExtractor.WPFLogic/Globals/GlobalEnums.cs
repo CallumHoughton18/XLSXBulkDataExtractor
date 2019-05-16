@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace XLSXBulkDataExtractor.BL.Globals
+namespace XLSXBulkDataExtractor.WPFLogic.Globals
 {
     public enum DataOutputFormat {XLSX, CSV }
 }
