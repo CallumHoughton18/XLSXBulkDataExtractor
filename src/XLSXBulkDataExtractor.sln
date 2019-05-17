@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMHelpers", "MVVMHelpers\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XLSXBulkDataExtractor.Common", "XLSXBulkDataExtractor.Common\XLSXBulkDataExtractor.Common.csproj", "{2835F803-72DD-4943-81B2-9CC3F55F8E1B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XLSXBulkDataExtractor.WPFLogicTests", "Tests\XLSXBulkDataExtractor.WPFLogicTests\XLSXBulkDataExtractor.WPFLogicTests.csproj", "{C6BBAF13-777F-49E4-A265-AACF5CD442F9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,9 +37,16 @@ Global
 		{2835F803-72DD-4943-81B2-9CC3F55F8E1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2835F803-72DD-4943-81B2-9CC3F55F8E1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2835F803-72DD-4943-81B2-9CC3F55F8E1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6BBAF13-777F-49E4-A265-AACF5CD442F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6BBAF13-777F-49E4-A265-AACF5CD442F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6BBAF13-777F-49E4-A265-AACF5CD442F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6BBAF13-777F-49E4-A265-AACF5CD442F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C6BBAF13-777F-49E4-A265-AACF5CD442F9} = {5DA11B0B-52B6-4726-A9B9-3DBB7B49FD6F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2B808047-B7BC-40D1-9D83-BF8924BC6DFD}

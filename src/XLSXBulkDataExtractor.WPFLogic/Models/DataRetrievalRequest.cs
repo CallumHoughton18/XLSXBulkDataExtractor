@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using XLSXBulkDataExtractor.BL.ViewModels;
+using XLSXBulkDataExtractor.WPFLogic.ViewModels;
 
-namespace XLSXBulkDataExtractor..WPFLogic.Models
+namespace XLSXBulkDataExtractor.WPFLogic.Models
 {
     public class DataRetrievalRequest : NotifyPropertyChangedBase
     {

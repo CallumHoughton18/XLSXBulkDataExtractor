@@ -10,7 +10,7 @@ using XLSXBulkDataExtractor.WPFLogic.Interfaces;
 
 namespace XLSXBulkDataExtractor.Service_Implementations
 {
-    public class WPFIOService : IIOService
+    public class IOService : IIOService
     {
         public string ChooseFolderDialog()
         {
@@ -31,7 +31,7 @@ namespace XLSXBulkDataExtractor.Service_Implementations
             try
             {
                 File.WriteAllText(path, text);
-                return new ReturnMessage(true, "");
+                return new ReturnMessage(true, $"Successfully saved to {path}");
             }
             catch (Exception e)
             {

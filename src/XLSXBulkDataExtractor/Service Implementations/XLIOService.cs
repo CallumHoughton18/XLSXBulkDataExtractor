@@ -16,7 +16,7 @@ namespace XLSXBulkDataExtractor.Service_Implementations
             try
             {
                 xlWorkbook.SaveAs(path);
-                return new ReturnMessage(true, "");
+                return new ReturnMessage(true, $"Successfully saved to: {path}");
             }
             catch(Exception e)
             {

@@ -81,7 +81,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Service Implementations\WPFIOService.cs" />
+    <Compile Include="Service Implementations\UIControlsService.cs" />
+    <Compile Include="Service Implementations\IOService.cs" />
     <Compile Include="Service Implementations\XLIOService.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

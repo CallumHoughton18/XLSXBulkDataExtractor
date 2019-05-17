@@ -11,6 +11,7 @@ using XLSXDataExtractor.Models;
 using System.Collections.Generic;
 using XLSXBulkDataExtractor.MVVMHelpers.MVVM_Extensions;
 using ClosedXML.Excel;
+using XLSXBulkDataExtractor.WPFLogic.Models;
 
 namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
 {
@@ -18,6 +19,7 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
     {
         private IIOService _ioService;
         private IXLIOService _xlioService;
+        private IUIControlsService _uiControlsService;
 
         DataRetrievalRequest _dataRetrievalRequest;
         DataRetrievalRequest SelectedDataRetrievalRequest
@@ -69,15 +71,16 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
         }
         public ObservableCollection<DataRetrievalRequest> DataRetrievalRequests { get; private set; } = new ObservableCollection<DataRetrievalRequest>();
 
-        private readonly ICommand AddExtractionRequestCommand;
-        private readonly ICommand DeleteExtractionRequestCommand;
-        private readonly ICommand BeginExtractionCommand;
-        private readonly ICommand SetOutputDirectoryCommand;
+        public readonly ICommand AddExtractionRequestCommand;
+        public readonly ICommand DeleteExtractionRequestCommand;
+        public readonly ICommand BeginExtractionCommand;
+        public readonly ICommand SetOutputDirectoryCommand;
 
-        public DataRetrievalViewModel(IIOService iioService, IXLIOService ixlioService)
+        public DataRetrievalViewModel(IIOService iioService, IXLIOService ixlioService, IUIControlsService iuiControlsService)
         {
             _ioService = iioService;
             _xlioService = ixlioService;
+            _uiControlsService = iuiControlsService;
 
             AddExtractionRequestCommand = new RelayCommand(() => AddNewEmptyExtractionRequest());
 
@@ -89,11 +92,11 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
                 }
                 catch (ArgumentNullException)
                 {
-                    //fire event to display error messagebox
+                    _uiControlsService.DisplayAlert("No data retrieval request selected", "Error!", MessageType.Error);
                 }
                 catch (CollectionEmptyException)
                 {
-                    //fire event to display error messagebox
+                    _uiControlsService.DisplayAlert("No data retrieval requests have been added", "Error!", MessageType.Error);
                 }
             });
 
@@ -105,7 +108,7 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
             });
         }
 
-        public void AddNewEmptyExtractionRequest()
+        private void AddNewEmptyExtractionRequest()
         {
             DataRetrievalRequests.Add(new DataRetrievalRequest());
         }
@@ -146,7 +149,7 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
             }
             else
             {
-                //GUI call to say no data available.
+                _uiControlsService.DisplayAlert($"No detected in files at {documentsDirectory.FullName}","No Data", MessageType.Information);
             }
         }
 
@@ -180,14 +183,10 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
         {
             if (returnMessage == null) throw new ArgumentNullException("returnMessage", "cannot be null");
 
-            if (returnMessage.Success)
-            {
-                //call to GUIService to display success popup with path as messagebox
-            }
-            else
-            {
-                //call to GUIService to display fail popup with error message
-            }
+            if (returnMessage.Success) _uiControlsService.DisplayAlert(returnMessage.Message, "Success!", MessageType.Information);
+          
+            else _uiControlsService.DisplayAlert(returnMessage.Message, "Error!", MessageType.Error);
+            
         }
 
         private IEnumerable<ExtractionRequest> DataRetrievalRequestCollectionToExtractionRequestCollection(IEnumerable<DataRetrievalRequest> dataRetrievalRequestsCol)

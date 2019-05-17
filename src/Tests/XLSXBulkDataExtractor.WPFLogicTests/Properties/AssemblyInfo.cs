@@ -2,18 +2,18 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("XLSXBulkDataExtractor.BL.Tests")]
+[assembly: AssemblyTitle("XLSXBulkDataExtractor.WPFLogicTests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("XLSXBulkDataExtractor.BL.Tests")]
+[assembly: AssemblyProduct("XLSXBulkDataExtractor.WPFLogicTests")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
 [assembly: ComVisible(false)]
 
-[assembly: Guid("ca83045b-c41b-42bf-87e4-504b004e25ec")]
+[assembly: Guid("c6bbaf13-777f-49e4-a265-aacf5cd442f9")]
 
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
