@@ -99,7 +99,7 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
             {
                 try
                 {
-                    DeleteExtractionRequest(SelectedDataRetrievalRequest); 
+                    DeleteExtractionRequest(SelectedDataRetrievalRequest);  
                 }
                 catch (CollectionEmptyException)
                 {
