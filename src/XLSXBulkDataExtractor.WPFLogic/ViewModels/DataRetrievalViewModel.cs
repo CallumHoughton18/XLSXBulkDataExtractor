@@ -22,7 +22,7 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
         private IUIControlsService _uiControlsService;
 
         DataRetrievalRequest _dataRetrievalRequest;
-        DataRetrievalRequest SelectedDataRetrievalRequest
+        public DataRetrievalRequest SelectedDataRetrievalRequest
         {
             get
             {
@@ -69,18 +69,29 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
                 }
             }
         }
-        public ObservableCollection<DataRetrievalRequest> DataRetrievalRequests { get; private set; } = new ObservableCollection<DataRetrievalRequest>();
 
-        public readonly ICommand AddExtractionRequestCommand;
-        public readonly ICommand DeleteExtractionRequestCommand;
-        public readonly ICommand BeginExtractionCommand;
-        public readonly ICommand SetOutputDirectoryCommand;
-
-        public DataRetrievalViewModel(IIOService iioService, IXLIOService ixlioService, IUIControlsService iuiControlsService)
+        public IEnumerable<DataOutputFormat> OutputFormats
         {
-            _ioService = iioService;
-            _xlioService = ixlioService;
-            _uiControlsService = iuiControlsService;
+            get
+            {
+                return Enum.GetValues(typeof(DataOutputFormat)).Cast<DataOutputFormat>();
+            }
+        }
+
+        public DataOutputFormat ChosenOutputFormat { get; set; } = DataOutputFormat.XLSX;
+
+        public ObservableCollection<DataRetrievalRequest> DataRetrievalRequests { get; set; } = new ObservableCollection<DataRetrievalRequest>();
+
+        public ICommand AddExtractionRequestCommand { get; private set; }
+        public ICommand DeleteExtractionRequestCommand { get; private set; }
+        public ICommand BeginExtractionCommand { get; private set; }
+        public ICommand SetOutputDirectoryCommand { get; private set; }
+
+        public DataRetrievalViewModel(IIOService ioService, IXLIOService xlioService, IUIControlsService uiControlsService)
+        {
+            _ioService = ioService;
+            _xlioService = xlioService;
+            _uiControlsService = uiControlsService;
 
             AddExtractionRequestCommand = new RelayCommand(() => AddNewEmptyExtractionRequest());
 
@@ -90,13 +101,29 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
                 {
                     DeleteExtractionRequest(SelectedDataRetrievalRequest);
                 }
+                catch (CollectionEmptyException)
+                {
+                    _uiControlsService.DisplayAlert("No data retrieval requests have been added", "Error!", MessageType.Error);
+                }
                 catch (ArgumentNullException)
                 {
                     _uiControlsService.DisplayAlert("No data retrieval request selected", "Error!", MessageType.Error);
                 }
-                catch (CollectionEmptyException)
+            });
+
+            BeginExtractionCommand = new RelayCommand(() =>
+            {
+                try
                 {
-                    _uiControlsService.DisplayAlert("No data retrieval requests have been added", "Error!", MessageType.Error);
+                    BeginExtraction(new DirectoryInfo(OutputDirectory), ChosenOutputFormat);
+                }
+                catch (ArgumentNullException e)
+                {
+                    if (e.ParamName.ToLower() == "documentsdirectory") _uiControlsService.DisplayAlert("No output directory set", "Alert!", MessageType.Error);
+                }
+                catch (NoDataOutputtedException e)
+                {
+                    _uiControlsService.DisplayAlert(e.Message, e.ExceptionTitle, MessageType.Error);
                 }
             });
 
@@ -106,6 +133,7 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
 
                 if (!string.IsNullOrWhiteSpace(chosenPath)) OutputDirectory = chosenPath;
             });
+
         }
 
         private void AddNewEmptyExtractionRequest()
@@ -115,8 +143,8 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
 
         private void DeleteExtractionRequest(DataRetrievalRequest dataRetrievalRequest)
         {
-            if (dataRetrievalRequest == null) throw new ArgumentNullException("dataRetrievalRequest", "Cannot be null");
             if (DataRetrievalRequests.Count == 0) throw new CollectionEmptyException();
+            if (dataRetrievalRequest == null) throw new ArgumentNullException("dataRetrievalRequest", "Cannot be null");
 
             DataRetrievalRequests.Remove(dataRetrievalRequest); //not concerned about successful removal, no need to interpret return bool.
         }
@@ -149,7 +177,7 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
             }
             else
             {
-                _uiControlsService.DisplayAlert($"No detected in files at {documentsDirectory.FullName}","No Data", MessageType.Information);
+                throw new NoDataOutputtedException($"No detected in files at {documentsDirectory.FullName}", "No Data");
             }
         }
 

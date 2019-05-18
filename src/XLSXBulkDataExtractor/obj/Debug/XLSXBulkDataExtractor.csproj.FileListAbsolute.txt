@@ -21,11 +21,9 @@ C:\Users\callum.houghton\Documents\Personal Projects\XLSXBulkDataExtractor\src\X
 C:\Users\callum.houghton\Documents\Personal Projects\XLSXBulkDataExtractor\src\XLSXBulkDataExtractor\bin\Debug\DocumentFormat.OpenXml.xml
 C:\Users\callum.houghton\Documents\Personal Projects\XLSXBulkDataExtractor\src\XLSXBulkDataExtractor\bin\Debug\ExcelNumberFormat.xml
 C:\Users\callum.houghton\Documents\Personal Projects\XLSXBulkDataExtractor\src\XLSXBulkDataExtractor\obj\Debug\XLSXBulkDataExtractor.csprojAssemblyReference.cache
-C:\Users\callum.houghton\Documents\Personal Projects\XLSXBulkDataExtractor\src\XLSXBulkDataExtractor\obj\Debug\MainWindow.g.cs
 C:\Users\callum.houghton\Documents\Personal Projects\XLSXBulkDataExtractor\src\XLSXBulkDataExtractor\obj\Debug\App.g.cs
 C:\Users\callum.houghton\Documents\Personal Projects\XLSXBulkDataExtractor\src\XLSXBulkDataExtractor\obj\Debug\XLSXBulkDataExtractor_MarkupCompile.cache
 C:\Users\callum.houghton\Documents\Personal Projects\XLSXBulkDataExtractor\src\XLSXBulkDataExtractor\obj\Debug\XLSXBulkDataExtractor_MarkupCompile.lref
-C:\Users\callum.houghton\Documents\Personal Projects\XLSXBulkDataExtractor\src\XLSXBulkDataExtractor\obj\Debug\MainWindow.baml
 C:\Users\callum.houghton\Documents\Personal Projects\XLSXBulkDataExtractor\src\XLSXBulkDataExtractor\obj\Debug\XLSXBulkDataExtractor.g.resources
 C:\Users\callum.houghton\Documents\Personal Projects\XLSXBulkDataExtractor\src\XLSXBulkDataExtractor\obj\Debug\XLSXBulkDataExtractor.Properties.Resources.resources
 C:\Users\callum.houghton\Documents\Personal Projects\XLSXBulkDataExtractor\src\XLSXBulkDataExtractor\obj\Debug\XLSXBulkDataExtractor.csproj.GenerateResource.cache
@@ -33,3 +31,6 @@ C:\Users\callum.houghton\Documents\Personal Projects\XLSXBulkDataExtractor\src\X
 C:\Users\callum.houghton\Documents\Personal Projects\XLSXBulkDataExtractor\src\XLSXBulkDataExtractor\obj\Debug\XLSXBulkDataExtractor.csproj.CopyComplete
 C:\Users\callum.houghton\Documents\Personal Projects\XLSXBulkDataExtractor\src\XLSXBulkDataExtractor\obj\Debug\XLSXBulkDataExtractor.exe
 C:\Users\callum.houghton\Documents\Personal Projects\XLSXBulkDataExtractor\src\XLSXBulkDataExtractor\obj\Debug\XLSXBulkDataExtractor.pdb
+C:\Users\callum.houghton\Documents\Personal Projects\XLSXBulkDataExtractor\src\XLSXBulkDataExtractor\bin\Debug\System.IO.Packaging.dll
+C:\Users\callum.houghton\Documents\Personal Projects\XLSXBulkDataExtractor\src\XLSXBulkDataExtractor\obj\Debug\DataRetrievalWindow.g.cs
+C:\Users\callum.houghton\Documents\Personal Projects\XLSXBulkDataExtractor\src\XLSXBulkDataExtractor\obj\Debug\DataRetrievalWindow.baml

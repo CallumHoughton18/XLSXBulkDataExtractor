@@ -10,19 +10,22 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
+using XLSXBulkDataExtractor.WPFLogic.Interfaces;
+using XLSXBulkDataExtractor.WPFLogic.ViewModels;
 
 namespace XLSXBulkDataExtractor
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for DataRetrievalWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class DataRetrievalWindow : Window
     {
-        public MainWindow()
+        DataRetrievalViewModel vm;
+        public DataRetrievalWindow(IIOService ioService, IXLIOService xlioService, IUIControlsService uiControlsService)
         {
             InitializeComponent();
+            DataContext = vm = new DataRetrievalViewModel(ioService, xlioService, uiControlsService);
         }
     }
 }
