@@ -42,6 +42,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\IAsyncCommand.cs" />
+    <Compile Include="MVVM Extensions\AsyncCommand.cs" />
     <Compile Include="MVVM Extensions\RelayCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -12,6 +12,10 @@ using System.Collections.Generic;
 using XLSXBulkDataExtractor.MVVMHelpers.MVVM_Extensions;
 using ClosedXML.Excel;
 using XLSXBulkDataExtractor.WPFLogic.Models;
+using System.Threading.Tasks;
+using System.Collections.Concurrent;
+using MVVMHelpers.MVVM_Extensions;
+using MVVMHelpers.Interfaces;
 
 namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
 {
@@ -84,11 +88,12 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
 
         public ICommand AddExtractionRequestCommand { get; private set; }
         public ICommand DeleteExtractionRequestCommand { get; private set; }
-        public ICommand BeginExtractionCommand { get; private set; }
+        public IAsyncCommand BeginExtractionCommand { get; private set; }
         public ICommand SetOutputDirectoryCommand { get; private set; }
 
         public DataRetrievalViewModel(IIOService ioService, IXLIOService xlioService, IUIControlsService uiControlsService)
         {
+            //TODO: Refactor tasks + actions into own methods to reduce constructor clutter
             _ioService = ioService;
             _xlioService = xlioService;
             _uiControlsService = uiControlsService;
@@ -99,7 +104,7 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
             {
                 try
                 {
-                    DeleteExtractionRequest(SelectedDataRetrievalRequest);  
+                    DeleteExtractionRequest(SelectedDataRetrievalRequest);
                 }
                 catch (CollectionEmptyException)
                 {
@@ -111,11 +116,12 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
                 }
             });
 
-            BeginExtractionCommand = new RelayCommand(() =>
+            BeginExtractionCommand = new AsyncCommand(async() =>
             {
                 try
                 {
-                    BeginExtraction(new DirectoryInfo(OutputDirectory), ChosenOutputFormat);
+                    //TODO: Pass cancellation token to begin extraction, so if button is clicked again the previous extraction is cancelled and a new one begins
+                    await BeginExtraction(new DirectoryInfo(OutputDirectory), ChosenOutputFormat);
                 }
                 catch (ArgumentNullException e)
                 {
@@ -154,22 +160,37 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
             return _ioService.ChooseFolderDialog();
         }
 
-        private void BeginExtraction(DirectoryInfo documentsDirectory, DataOutputFormat dataOutputFormat)
+        private async Task BeginExtraction(DirectoryInfo documentsDirectory, DataOutputFormat dataOutputFormat)
         {
             //Possibly want this to be async, so the program doesn't lock up on a big extraction
-            var validExtensions = new string[] { "xlsx", "xlsm" };
+            var validExtensions = new string[] { ".xlsx", ".xlsm" };
             if (documentsDirectory == null) throw new ArgumentNullException("fileInfo", "Cannot be null");
-            IEnumerable<IEnumerable<KeyValuePair<string, object>>> extractedDataCol = null;
 
-            foreach (var document in documentsDirectory.GetFiles())
+            var extractedDataCol = new BlockingCollection<IEnumerable<KeyValuePair<string, object>>>();
+
+            await Task.Run(() =>
             {
-                if (validExtensions.Contains(Path.GetExtension(document.FullName).ToLower()))
+                Parallel.ForEach(documentsDirectory.GetFiles(), (document) =>
                 {
-                    var dataExtractor = new DataExtractor(document.FullName);
-                    var extractionRequests = DataRetrievalRequestCollectionToExtractionRequestCollection(DataRetrievalRequests);
-                    extractedDataCol = dataExtractor.RetrieveDataCollectionFromAllWorksheets<object>(extractionRequests);
-                }
-            }
+                    try
+                    {
+                        if (validExtensions.Contains(Path.GetExtension(document.FullName).ToLower()))
+                        {
+                            var extractionRequests = DataRetrievalRequestCollectionToExtractionRequestCollection(DataRetrievalRequests);
+                            var dataExtractor = new DataExtractor(document.FullName);
+                            foreach (var extraction in (dataExtractor.RetrieveDataCollectionFromAllWorksheets<object>(extractionRequests)))
+                            {
+                                extractedDataCol.Add(extraction);
+                            }
+                        }
+                    }
+                    catch(Exception e)
+                    {
+                        //this could be be better, maybe return a ReturnMessage at the end whether full conversion was successful? 
+                        throw;
+                    }
+                });
+            });
 
             if (extractedDataCol != null)
             {
@@ -183,6 +204,7 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
 
         private void SaveExtractedData(DataOutputFormat dataOutputFormat, IEnumerable<IEnumerable<KeyValuePair<string, object>>> extractedDataCol)
         {
+            //maybe save with tick appended onto file, in case file is already open?
             ReturnMessage succesfullySaved;
 
             switch (dataOutputFormat)
@@ -212,9 +234,9 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
             if (returnMessage == null) throw new ArgumentNullException("returnMessage", "cannot be null");
 
             if (returnMessage.Success) _uiControlsService.DisplayAlert(returnMessage.Message, "Success!", MessageType.Information);
-          
+
             else _uiControlsService.DisplayAlert(returnMessage.Message, "Error!", MessageType.Error);
-            
+
         }
 
         private IEnumerable<ExtractionRequest> DataRetrievalRequestCollectionToExtractionRequestCollection(IEnumerable<DataRetrievalRequest> dataRetrievalRequestsCol)

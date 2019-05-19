@@ -2,6 +2,9 @@
 using NUnit.Framework;
 using System;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Reflection;
+using System.Threading.Tasks;
 using XLSXBulkDataExtractor.WPFLogic.Globals;
 using XLSXBulkDataExtractor.WPFLogic.Models;
 using XLSXBulkDataExtractor.WPFLogic.ViewModels;
@@ -12,7 +15,7 @@ namespace XLSXBulkDataExtractor.WPFLogicTests
     {
         public override void InitialOneTimeSetup()
         {
-            base.InitialOneTimeSetup();           
+            base.InitialOneTimeSetup();
         }
 
         [Test]
@@ -35,7 +38,7 @@ namespace XLSXBulkDataExtractor.WPFLogicTests
             DataRetrievalViewModel sut = new DataRetrievalViewModel(ioServiceMock.Object, xlIOServiceMock.Object, uiControlsServiceMock.Object);
             sut.DataRetrievalRequests = new ObservableCollection<DataRetrievalRequest>(WPFLogicTestsHelper.GenerateMockRequests());
             sut.SelectedDataRetrievalRequest = sut.DataRetrievalRequests[1];
-            
+
             sut.DeleteExtractionRequestCommand.Execute(null);
 
             Assert.That(sut.DataRetrievalRequests.Count, Is.EqualTo(2));
@@ -88,9 +91,33 @@ namespace XLSXBulkDataExtractor.WPFLogicTests
         }
 
         [Test]
-        [Ignore("Not completed yet")]
-        public void ExtractDataValid()
+        //[Ignore("Not completed yet")]
+        public async Task ExtractDataValid()
         {
+            ClosedXML.Excel.XLWorkbook generatedWorkbook = null;
+            DataRetrievalViewModel sut = new DataRetrievalViewModel(ioServiceMock.Object, xlIOServiceMock.Object, uiControlsServiceMock.Object);
+            sut.OutputDirectory = Path.Combine(debugDirectory, "XLSXFiles");
+            sut.DirectoryForXLSXExtractionFiles = Path.Combine(debugDirectory, "XLSXFiles");
+            sut.DataRetrievalRequests = new ObservableCollection<DataRetrievalRequest>();
+            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test", Column = 1, Row = 1 });
+            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test2", Column = 2, Row = 2 });
+            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test3", Column = 3, Row = 3 });
+            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test4", Column = 4, Row = 4 });
+            xlIOServiceMock.Setup(x => x.SaveWorkbook(It.IsAny<string>(), It.IsAny<ClosedXML.Excel.XLWorkbook>()))
+                .Callback<string, ClosedXML.Excel.XLWorkbook>((path, workbook) => generatedWorkbook = workbook)
+                .Returns(new Common.ReturnMessage(true, "workbook generated"));
+
+            await sut.BeginExtractionCommand.ExecuteAsync();
+
+            AssertCellValueForWorksheet(2, 1, "Test", generatedWorkbook);
+            AssertCellValueForWorksheet(7, 3, "Ashish", generatedWorkbook);
+            AssertCellValueForWorksheet(13, 4, "2013", generatedWorkbook);
+            AssertCellValueForWorksheet(17, 1, "Postcode", generatedWorkbook);
+        }
+
+        public void AssertCellValueForWorksheet(int row, int column,string expectedValue, ClosedXML.Excel.XLWorkbook generatedWorkbook)
+        {
+            Assert.That(generatedWorkbook.Worksheet(1).Cell(row, column).Value.ToString(), Is.EqualTo(expectedValue));
         }
     }
 }
