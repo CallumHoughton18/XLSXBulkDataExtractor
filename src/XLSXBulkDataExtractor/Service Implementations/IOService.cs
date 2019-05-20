@@ -30,7 +30,7 @@ namespace XLSXBulkDataExtractor.Service_Implementations
         {
             try
             {
-                File.WriteAllText(path, text);
+                File.WriteAllText($"{path} {DateTime.Now.Ticks}", text);
                 return new ReturnMessage(true, $"Successfully saved to {path}");
             }
             catch (Exception e)

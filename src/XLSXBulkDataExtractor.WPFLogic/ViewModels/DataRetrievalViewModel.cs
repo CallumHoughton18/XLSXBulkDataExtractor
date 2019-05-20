@@ -121,7 +121,14 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
                 try
                 {
                     //TODO: Pass cancellation token to begin extraction, so if button is clicked again the previous extraction is cancelled and a new one begins
-                    await BeginExtraction(new DirectoryInfo(OutputDirectory), ChosenOutputFormat);
+                    var successfulExtractions = await BeginExtraction(new DirectoryInfo(OutputDirectory), ChosenOutputFormat);
+
+                    if (successfulExtractions.Any(x => x.Success == false))
+                    {
+                        throw new ExtractionFailedException("Some extractions were unsuccessful...", 
+                                                            "Full Extraction Unsuccessful", 
+                                                            successfulExtractions.Where(x => x.Success == false).Select(y => y.Message));
+                    }
                 }
                 catch (ArgumentNullException e)
                 {
@@ -130,6 +137,11 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
                 catch (NoDataOutputtedException e)
                 {
                     _uiControlsService.DisplayAlert(e.Message, e.ExceptionTitle, MessageType.Error);
+                }
+                catch (ExtractionFailedException e)
+                {
+                    string alertBody = string.Join(Environment.NewLine, e.FailedExtractionMessages.Select(msg => string.Join(", ", msg)));
+                    _uiControlsService.DisplayAlert(alertBody, e.ExceptionTitle, MessageType.Error);
                 }
             });
 
@@ -160,13 +172,13 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
             return _ioService.ChooseFolderDialog();
         }
 
-        private async Task BeginExtraction(DirectoryInfo documentsDirectory, DataOutputFormat dataOutputFormat)
+        private async Task<IEnumerable<ReturnMessage>> BeginExtraction(DirectoryInfo documentsDirectory, DataOutputFormat dataOutputFormat)
         {
-            //Possibly want this to be async, so the program doesn't lock up on a big extraction
             var validExtensions = new string[] { ".xlsx", ".xlsm" };
             if (documentsDirectory == null) throw new ArgumentNullException("fileInfo", "Cannot be null");
 
             var extractedDataCol = new BlockingCollection<IEnumerable<KeyValuePair<string, object>>>();
+            var returnMessages = new List<ReturnMessage>();
 
             await Task.Run(() =>
             {
@@ -182,12 +194,13 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
                             {
                                 extractedDataCol.Add(extraction);
                             }
+
+                            returnMessages.Add(new ReturnMessage(true, $"{document.Name} successfully parsed and extracted from"));
                         }
                     }
                     catch(Exception e)
                     {
-                        //this could be be better, maybe return a ReturnMessage at the end whether full conversion was successful? 
-                        throw;
+                        returnMessages.Add(new ReturnMessage(false, $"Failed to extract from {document.Name}.{Environment.NewLine}Error: {e.Message}"));
                     }
                 });
             });
@@ -200,11 +213,12 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
             {
                 throw new NoDataOutputtedException($"No detected in files at {documentsDirectory.FullName}", "No Data");
             }
+
+            return returnMessages;
         }
 
         private void SaveExtractedData(DataOutputFormat dataOutputFormat, IEnumerable<IEnumerable<KeyValuePair<string, object>>> extractedDataCol)
         {
-            //maybe save with tick appended onto file, in case file is already open?
             ReturnMessage succesfullySaved;
 
             switch (dataOutputFormat)
