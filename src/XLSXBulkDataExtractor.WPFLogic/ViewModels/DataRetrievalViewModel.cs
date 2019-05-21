@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using MVVMHelpers.MVVM_Extensions;
 using MVVMHelpers.Interfaces;
+using System.Threading;
 
 namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
 {
@@ -24,6 +25,8 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
         private IIOService _ioService;
         private IXLIOService _xlioService;
         private IUIControlsService _uiControlsService;
+
+        private CancellationTokenSource _extractionCancellationTokenSource = null;
 
         DataRetrievalRequest _dataRetrievalRequest;
         public DataRetrievalRequest SelectedDataRetrievalRequest
@@ -74,6 +77,40 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
             }
         }
 
+        private double _extractionProgress = 0;
+        public double ExtractionProgress
+        {
+            get
+            {
+                return _extractionProgress;
+            }
+            set
+            {
+                if (_extractionProgress != value)
+                {
+                    _extractionProgress = value;
+                    OnPropertyChanged(nameof(ExtractionProgress));
+                }
+            }
+        }
+
+        private double _totalExtractionCount = 1;
+        public double TotalExtractionCount
+        {
+            get
+            {
+                return _totalExtractionCount;
+            }
+            set
+            {
+                if (_totalExtractionCount != value)
+                {
+                    _totalExtractionCount = value;
+                    OnPropertyChanged(nameof(TotalExtractionCount));
+                }
+            }
+        }
+
         public IEnumerable<DataOutputFormat> OutputFormats
         {
             get
@@ -93,73 +130,95 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
 
         public DataRetrievalViewModel(IIOService ioService, IXLIOService xlioService, IUIControlsService uiControlsService)
         {
-            //TODO: Refactor tasks + actions into own methods to reduce constructor clutter
             _ioService = ioService;
             _xlioService = xlioService;
             _uiControlsService = uiControlsService;
 
             AddExtractionRequestCommand = new RelayCommand(() => AddNewEmptyExtractionRequest());
-
-            DeleteExtractionRequestCommand = new RelayCommand(() =>
-            {
-                try
-                {
-                    DeleteExtractionRequest(SelectedDataRetrievalRequest);
-                }
-                catch (CollectionEmptyException)
-                {
-                    _uiControlsService.DisplayAlert("No data retrieval requests have been added", "Error!", MessageType.Error);
-                }
-                catch (ArgumentNullException)
-                {
-                    _uiControlsService.DisplayAlert("No data retrieval request selected", "Error!", MessageType.Error);
-                }
-            });
-
-            BeginExtractionCommand = new AsyncCommand(async() =>
-            {
-                try
-                {
-                    //TODO: Pass cancellation token to begin extraction, so if button is clicked again the previous extraction is cancelled and a new one begins
-                    var successfulExtractions = await BeginExtraction(new DirectoryInfo(OutputDirectory), ChosenOutputFormat);
-
-                    if (successfulExtractions.Any(x => x.Success == false))
-                    {
-                        throw new ExtractionFailedException("Some extractions were unsuccessful...", 
-                                                            "Full Extraction Unsuccessful", 
-                                                            successfulExtractions.Where(x => x.Success == false).Select(y => y.Message));
-                    }
-                }
-                catch (ArgumentNullException e)
-                {
-                    if (e.ParamName.ToLower() == "documentsdirectory") _uiControlsService.DisplayAlert("No output directory set", "Alert!", MessageType.Error);
-                }
-                catch (NoDataOutputtedException e)
-                {
-                    _uiControlsService.DisplayAlert(e.Message, e.ExceptionTitle, MessageType.Error);
-                }
-                catch (ExtractionFailedException e)
-                {
-                    string alertBody = string.Join(Environment.NewLine, e.FailedExtractionMessages.Select(msg => string.Join(", ", msg)));
-                    _uiControlsService.DisplayAlert(alertBody, e.ExceptionTitle, MessageType.Error);
-                }
-            });
-
-            SetOutputDirectoryCommand = new RelayCommand(() =>
-            {
-                var chosenPath = SetOutputDirectory();
-
-                if (!string.IsNullOrWhiteSpace(chosenPath)) OutputDirectory = chosenPath;
-            });
-
+            DeleteExtractionRequestCommand = new RelayCommand(() => DeleteExtractionRequest());
+            BeginExtractionCommand = new AsyncCommand(async () => await BeginExtraction());
+            SetOutputDirectoryCommand = new RelayCommand(() => SetOutputDirectory());
         }
 
+        #region Methods For Commands
         private void AddNewEmptyExtractionRequest()
         {
             DataRetrievalRequests.Add(new DataRetrievalRequest());
         }
 
-        private void DeleteExtractionRequest(DataRetrievalRequest dataRetrievalRequest)
+        private void DeleteExtractionRequest()
+        {
+            try
+            {
+                DeleteExtractionRequestFromCollection(SelectedDataRetrievalRequest);
+            }
+            catch (CollectionEmptyException)
+            {
+                _uiControlsService.DisplayAlert("No data retrieval requests have been added", "Error!", MessageType.Error);
+            }
+            catch (ArgumentNullException)
+            {
+                _uiControlsService.DisplayAlert("No data retrieval request selected", "Error!", MessageType.Error);
+            }
+        }
+
+        private async Task BeginExtraction()
+        {
+
+            try
+            {
+                if (string.IsNullOrWhiteSpace(OutputDirectory)) throw new ArgumentNullException(nameof(OutputDirectory),"cannot be null or empty");
+
+                if (_extractionCancellationTokenSource != null)
+                {
+                    _extractionCancellationTokenSource.Cancel();
+                    _extractionCancellationTokenSource = null;
+                }
+                _extractionCancellationTokenSource = new CancellationTokenSource();
+
+                var extractionProgress = new Progress<IEnumerable<ReturnMessage>>();
+                extractionProgress.ProgressChanged += ExtractionProgress_ProgressChanged;
+
+                var successfulExtractions = await ExtractDataFromFiles(new DirectoryInfo(OutputDirectory), ChosenOutputFormat, extractionProgress, _extractionCancellationTokenSource.Token);
+
+                if (successfulExtractions.Any(x => x.Success == false))
+                {
+                    throw new ExtractionFailedException("Some extractions were unsuccessful...",
+                                                        "Full Extraction Unsuccessful",
+                                                        successfulExtractions.Where(x => x.Success == false).Select(y => y.Message));
+                }
+
+                ExtractionProgress = 0;
+            }
+            catch (ArgumentNullException e)
+            {
+                if (e.ParamName.ToLower() == "documentsdirectory" || e.ParamName == nameof(OutputDirectory)) _uiControlsService.DisplayAlert("No output directory set", "Alert!", MessageType.Error);
+            }
+            catch (NoDataOutputtedException e)
+            {
+                _uiControlsService.DisplayAlert(e.Message, e.ExceptionTitle, MessageType.Error);
+            }
+            catch (ExtractionFailedException e)
+            {
+                string alertBody = string.Join(Environment.NewLine, e.FailedExtractionMessages.Select(msg => string.Join(", ", msg)));
+                _uiControlsService.DisplayAlert(alertBody, e.ExceptionTitle, MessageType.Error);
+            }
+        }
+
+        private void ExtractionProgress_ProgressChanged(object sender, IEnumerable<ReturnMessage> e)
+        {
+            ExtractionProgress += 1;
+        }
+
+        public void SetOutputDirectory()
+        {
+            var chosenPath = SetOutputDirectoryFromIOService();
+
+            if (!string.IsNullOrWhiteSpace(chosenPath)) OutputDirectory = chosenPath;
+        }
+        #endregion
+
+        private void DeleteExtractionRequestFromCollection(DataRetrievalRequest dataRetrievalRequest)
         {
             if (DataRetrievalRequests.Count == 0) throw new CollectionEmptyException();
             if (dataRetrievalRequest == null) throw new ArgumentNullException("dataRetrievalRequest", "Cannot be null");
@@ -167,26 +226,31 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
             DataRetrievalRequests.Remove(dataRetrievalRequest); //not concerned about successful removal, no need to interpret return bool.
         }
 
-        private string SetOutputDirectory()
+        private string SetOutputDirectoryFromIOService()
         {
             return _ioService.ChooseFolderDialog();
         }
 
-        private async Task<IEnumerable<ReturnMessage>> BeginExtraction(DirectoryInfo documentsDirectory, DataOutputFormat dataOutputFormat)
+        private async Task<IEnumerable<ReturnMessage>> ExtractDataFromFiles(DirectoryInfo documentsDirectory, DataOutputFormat dataOutputFormat, IProgress<IEnumerable<ReturnMessage>> progress, CancellationToken cancellationToken)
         {
-            var validExtensions = new string[] { ".xlsx", ".xlsm" };
             if (documentsDirectory == null) throw new ArgumentNullException("fileInfo", "Cannot be null");
+            if (cancellationToken == null) throw new ArgumentNullException("cancellationToken", "Cannot be null");
+
+            var validExtensions = new string[] { ".xlsx", ".xlsm" };
 
             var extractedDataCol = new BlockingCollection<IEnumerable<KeyValuePair<string, object>>>();
-            var returnMessages = new List<ReturnMessage>();
+            var returnMessages = new BlockingCollection<ReturnMessage>();
 
             await Task.Run(() =>
             {
-                Parallel.ForEach(documentsDirectory.GetFiles(), (document) =>
+                var documents = documentsDirectory.GetFiles().Where(x => validExtensions.Contains(Path.GetExtension(x.FullName).ToLower()));
+                TotalExtractionCount = documents.Count();
+
+                Parallel.ForEach(documents, (document) =>
                 {
                     try
-                    {
-                        if (validExtensions.Contains(Path.GetExtension(document.FullName).ToLower()))
+                    {                      
+                        if (!cancellationToken.IsCancellationRequested)
                         {
                             var extractionRequests = DataRetrievalRequestCollectionToExtractionRequestCollection(DataRetrievalRequests);
                             var dataExtractor = new DataExtractor(document.FullName);
@@ -202,8 +266,10 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
                     {
                         returnMessages.Add(new ReturnMessage(false, $"Failed to extract from {document.Name}.{Environment.NewLine}Error: {e.Message}"));
                     }
+
+                    progress?.Report(returnMessages);
                 });
-            });
+            },cancellationToken);
 
             if (extractedDataCol != null)
             {
@@ -228,13 +294,13 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
 
                     var newWorkbook = new XLWorkbook();
                     newWorkbook.AddWorksheet(generatedWorksheet);
-                    succesfullySaved = _xlioService.SaveWorkbook(Path.Combine(OutputDirectory, "Output.xlsx"), newWorkbook);
+                    succesfullySaved = _xlioService.SaveWorkbook(Path.Combine(OutputDirectory,$"{DateTime.Now.Ticks} Output.xlsx"), newWorkbook);
                     DisplaySuccessOrFailMessage(succesfullySaved);
 
                     break;
                 case DataOutputFormat.CSV:
                     var generatedCSV = ExtractedDataConverter.ConvertToCSV(extractedDataCol);
-                    succesfullySaved = _ioService.SaveText(generatedCSV, Path.Combine(OutputDirectory, "Output.csv"));
+                    succesfullySaved = _ioService.SaveText(generatedCSV, Path.Combine(OutputDirectory, $"{DateTime.Now.Ticks} Output.csv"));
                     DisplaySuccessOrFailMessage(succesfullySaved);
 
                     break;

@@ -62,6 +62,8 @@
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
+                    <ProgressBar Maximum="{Binding TotalExtractionCount}" Value="{Binding ExtractionProgress}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="3"/>
+                    <Button Content="Begin Extraction" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" Command="{Binding BeginExtractionCommand}"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Data Viewer" />

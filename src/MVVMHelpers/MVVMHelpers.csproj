@@ -47,5 +47,11 @@
     <Compile Include="MVVM Extensions\RelayCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XLSXBulkDataExtractor.Common\XLSXBulkDataExtractor.Common.csproj">
+      <Project>{2835F803-72DD-4943-81B2-9CC3F55F8E1B}</Project>
+      <Name>XLSXBulkDataExtractor.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

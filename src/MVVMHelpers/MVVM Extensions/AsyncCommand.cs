@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using XLSXBulkDataExtractor.Common.Extension_Classes;
 
 namespace MVVMHelpers.MVVM_Extensions
 {
@@ -60,7 +61,8 @@ namespace MVVMHelpers.MVVM_Extensions
 
         void ICommand.Execute(object parameter)
         {
-            ExecuteAsync().RunSynchronously();
+            //rethrows exception to be handled further up the call stack.
+            ExecuteAsync().FireUnsafeAsync();
         }
         #endregion
     }
