@@ -127,6 +127,7 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
         public ICommand DeleteExtractionRequestCommand { get; private set; }
         public IAsyncCommand BeginExtractionCommand { get; private set; }
         public ICommand SetOutputDirectoryCommand { get; private set; }
+        public Progress<IEnumerable<ReturnMessage>> ExtractionProgressEvent { get; } = new Progress<IEnumerable<ReturnMessage>>();
 
         public DataRetrievalViewModel(IIOService ioService, IXLIOService xlioService, IUIControlsService uiControlsService)
         {
@@ -138,6 +139,9 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
             DeleteExtractionRequestCommand = new RelayCommand(() => DeleteExtractionRequest());
             BeginExtractionCommand = new AsyncCommand(async () => await BeginExtraction());
             SetOutputDirectoryCommand = new RelayCommand(() => SetOutputDirectory());
+
+            ExtractionProgressEvent = new Progress<IEnumerable<ReturnMessage>>();
+            ExtractionProgressEvent.ProgressChanged += ExtractionProgress_ProgressChanged;
         }
 
         #region Methods For Commands
@@ -176,10 +180,7 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
                 }
                 _extractionCancellationTokenSource = new CancellationTokenSource();
 
-                var extractionProgress = new Progress<IEnumerable<ReturnMessage>>();
-                extractionProgress.ProgressChanged += ExtractionProgress_ProgressChanged;
-
-                var successfulExtractions = await ExtractDataFromFiles(new DirectoryInfo(OutputDirectory), ChosenOutputFormat, extractionProgress, _extractionCancellationTokenSource.Token);
+                var successfulExtractions = await ExtractDataFromFiles(new DirectoryInfo(OutputDirectory), ChosenOutputFormat, ExtractionProgressEvent, _extractionCancellationTokenSource.Token);
 
                 if (successfulExtractions.Any(x => x.Success == false))
                 {
