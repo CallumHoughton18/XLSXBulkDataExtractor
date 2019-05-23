@@ -9,6 +9,6 @@ namespace XLSXBulkDataExtractor.WPFLogic.Interfaces
 {
     public interface IUIControlsService
     {
-        void DisplayAlert(string message, string caption, MessageType messageType);
+        void DisplayAlert(string message, MessageType messageType);
     }
 }

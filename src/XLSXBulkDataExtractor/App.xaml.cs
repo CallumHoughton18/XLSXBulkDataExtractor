@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using XLSXBulkDataExtractor.Service_Implementations;
+using XLSXBulkDataExtractor.Singletons;
 
 namespace XLSXBulkDataExtractor
 {
@@ -16,7 +17,7 @@ namespace XLSXBulkDataExtractor
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-            MainWindow = new DataRetrievalWindow(new IOService(), new XLIOService(), new UIControlsService());
+            MainWindow = new DataRetrievalWindow(new IOService(), new XLIOService(), new UIControlsService(NotificationSingleton.NotifierInstance));
             MainWindow.Show();
         }
     }

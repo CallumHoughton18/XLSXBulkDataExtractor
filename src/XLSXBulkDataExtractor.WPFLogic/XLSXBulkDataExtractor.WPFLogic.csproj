@@ -65,8 +65,8 @@
     <Reference Include="XLSXDataExtractor, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\XLSX_Data_Extractor.1.0.0\lib\netstandard2.0\XLSXDataExtractor.dll</HintPath>
     </Reference>
-    <Reference Include="XLSXDataExtractor.Common, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\XLSXDataExtractor.Common.1.0.1\lib\netstandard2.0\XLSXDataExtractor.Common.dll</HintPath>
+    <Reference Include="XLSXDataExtractor.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\XLSXDataExtractor.Common.1.0.0\lib\netstandard2.0\XLSXDataExtractor.Common.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

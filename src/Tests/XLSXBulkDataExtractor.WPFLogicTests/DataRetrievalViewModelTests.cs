@@ -56,7 +56,7 @@ namespace XLSXBulkDataExtractor.WPFLogicTests
 
             sut.DeleteExtractionRequestCommand.Execute(null);
 
-            uiControlsServiceMock.Verify(x => x.DisplayAlert("No data retrieval request selected", It.IsAny<string>(), MessageType.Error), Times.Once());
+            uiControlsServiceMock.Verify(x => x.DisplayAlert("No data retrieval request selected", MessageType.Error), Times.Once());
             Assert.That(sut.DataRetrievalRequests.Count, Is.EqualTo(3));
         }
 
@@ -67,7 +67,7 @@ namespace XLSXBulkDataExtractor.WPFLogicTests
 
             sut.DeleteExtractionRequestCommand.Execute(null);
 
-            uiControlsServiceMock.Verify(x => x.DisplayAlert("No data retrieval requests have been added", It.IsAny<string>(), MessageType.Error), Times.Once());
+            uiControlsServiceMock.Verify(x => x.DisplayAlert("No data retrieval requests have been added", MessageType.Error), Times.Once());
         }
 
         [Test]
@@ -133,7 +133,7 @@ namespace XLSXBulkDataExtractor.WPFLogicTests
 
             await sut.BeginExtractionCommand.ExecuteAsync();
 
-            uiControlsServiceMock.Verify(x => x.DisplayAlert("No output directory set", "Alert!", MessageType.Error), Times.Once);
+            uiControlsServiceMock.Verify(x => x.DisplayAlert("No output directory set", MessageType.Error), Times.Once);
         }
 
         [Test]

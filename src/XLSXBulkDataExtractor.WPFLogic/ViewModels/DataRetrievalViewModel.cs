@@ -158,11 +158,11 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
             }
             catch (CollectionEmptyException)
             {
-                _uiControlsService.DisplayAlert("No data retrieval requests have been added", "Error!", MessageType.Error);
+                _uiControlsService.DisplayAlert("No data retrieval requests have been added", MessageType.Error);
             }
             catch (ArgumentNullException)
             {
-                _uiControlsService.DisplayAlert("No data retrieval request selected", "Error!", MessageType.Error);
+                _uiControlsService.DisplayAlert("No data retrieval request selected", MessageType.Error);
             }
         }
 
@@ -193,16 +193,16 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
             }
             catch (ArgumentNullException e)
             {
-                if (e.ParamName.ToLower() == "documentsdirectory" || e.ParamName == nameof(OutputDirectory)) _uiControlsService.DisplayAlert("No output directory set", "Alert!", MessageType.Error);
+                if (e.ParamName.ToLower() == "documentsdirectory" || e.ParamName == nameof(OutputDirectory)) _uiControlsService.DisplayAlert("No output directory set", MessageType.Error);
             }
             catch (NoDataOutputtedException e)
             {
-                _uiControlsService.DisplayAlert(e.Message, e.ExceptionTitle, MessageType.Error);
+                _uiControlsService.DisplayAlert(e.Message, MessageType.Error);
             }
             catch (ExtractionFailedException e)
             {
                 string alertBody = string.Join(Environment.NewLine, e.FailedExtractionMessages.Select(msg => string.Join(", ", msg)));
-                _uiControlsService.DisplayAlert(alertBody, e.ExceptionTitle, MessageType.Error);
+                _uiControlsService.DisplayAlert(alertBody, MessageType.Error);
             }
         }
 
@@ -314,9 +314,9 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
         {
             if (returnMessage == null) throw new ArgumentNullException("returnMessage", "cannot be null");
 
-            if (returnMessage.Success) _uiControlsService.DisplayAlert(returnMessage.Message, "Success!", MessageType.Information);
+            if (returnMessage.Success) _uiControlsService.DisplayAlert(returnMessage.Message, MessageType.Information);
 
-            else _uiControlsService.DisplayAlert(returnMessage.Message, "Error!", MessageType.Error);
+            else _uiControlsService.DisplayAlert(returnMessage.Message, MessageType.Error);
 
         }
 

@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XLSXBulkDataExtractor.Commo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XLSXBulkDataExtractor.WPFLogicTests", "Tests\XLSXBulkDataExtractor.WPFLogicTests\XLSXBulkDataExtractor.WPFLogicTests.csproj", "{C6BBAF13-777F-49E4-A265-AACF5CD442F9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation Logic", "Presentation Logic", "{896AF80E-AEC4-49E6-B139-3DE1BED766FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +48,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{92FECE06-6F32-47B9-B541-0E42BCD161D3} = {896AF80E-AEC4-49E6-B139-3DE1BED766FD}
 		{C6BBAF13-777F-49E4-A265-AACF5CD442F9} = {5DA11B0B-52B6-4726-A9B9-3DBB7B49FD6F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
