@@ -17,6 +17,7 @@ using System.Collections.Concurrent;
 using MVVMHelpers.MVVM_Extensions;
 using MVVMHelpers.Interfaces;
 using System.Threading;
+using System.Data;
 
 namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
 {
@@ -27,6 +28,23 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
         private IUIControlsService _uiControlsService;
 
         private CancellationTokenSource _extractionCancellationTokenSource = null;
+
+        private DataTable _extractedDataTable;
+        public DataTable ExtractedDataTable
+        {
+            get
+            {
+                return _extractedDataTable;
+            }
+            set
+            {
+                if (_extractedDataTable != value)
+                {
+                    _extractedDataTable = value;
+                    OnPropertyChanged(nameof(ExtractedDataTable));
+                }
+            }
+        }
 
         DataRetrievalRequest _dataRetrievalRequest;
         public DataRetrievalRequest SelectedDataRetrievalRequest
@@ -287,20 +305,22 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
         private void SaveExtractedData(DataOutputFormat dataOutputFormat, IEnumerable<IEnumerable<KeyValuePair<string, object>>> extractedDataCol)
         {
             ReturnMessage succesfullySaved;
+            DataTable extractedDataTable = null;
 
             switch (dataOutputFormat)
             {
                 case DataOutputFormat.XLSX:
-                    var generatedWorksheet = ExtractedDataConverter.ConvertToWorksheet(extractedDataCol);
-
+                    extractedDataTable = ExtractedDataConverter.GenerateDataTable(extractedDataCol);
+                    extractedDataTable.TableName = "ExtractedData";
                     var newWorkbook = new XLWorkbook();
-                    newWorkbook.AddWorksheet(generatedWorksheet);
+                    newWorkbook.AddWorksheet(extractedDataTable);
                     succesfullySaved = _xlioService.SaveWorkbook(Path.Combine(OutputDirectory,$"{DateTime.Now.Ticks} Output.xlsx"), newWorkbook);
                     DisplaySuccessOrFailMessage(succesfullySaved);
 
                     break;
                 case DataOutputFormat.CSV:
-                    var generatedCSV = ExtractedDataConverter.ConvertToCSV(extractedDataCol);
+                    extractedDataTable = ExtractedDataConverter.GenerateDataTable(extractedDataCol);
+                    var generatedCSV = ExtractedDataConverter.ConvertToCSV(extractedDataTable);
                     succesfullySaved = _ioService.SaveText(generatedCSV, Path.Combine(OutputDirectory, $"{DateTime.Now.Ticks} Output.csv"));
                     DisplaySuccessOrFailMessage(succesfullySaved);
 
@@ -308,6 +328,8 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
                 default:
                     break;
             }
+
+            if (extractedDataTable != null) ExtractedDataTable = extractedDataTable;
         }
 
         private void DisplaySuccessOrFailMessage(ReturnMessage returnMessage)

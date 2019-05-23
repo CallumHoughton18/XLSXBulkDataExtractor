@@ -98,7 +98,11 @@
                     </materialDesign:Card>
                 </Grid>
             </TabItem>
-            <TabItem Header="Data Viewer" />
+            <TabItem Header="Data Viewer">
+                <Grid>
+                    <DataGrid Name="Extracted_Data" ItemsSource="{Binding ExtractedDataTable}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                </Grid>
+            </TabItem>
         </dragablz:TabablzControl>
     </Grid>
 </Window>
