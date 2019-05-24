@@ -151,7 +151,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\XLSXExtractor.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

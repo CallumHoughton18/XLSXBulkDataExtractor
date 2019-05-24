@@ -165,9 +165,33 @@ namespace XLSXBulkDataExtractor.WPFLogicTests
             Assert.That(sut.ExtractionProgress, Is.EqualTo(0D)); //check that extraction progress reset when complete.
         }
 
+        [Test]
+        public async Task ExtractDataTaskDataTableTest()
+        {
+
+            DataRetrievalViewModel sut = new DataRetrievalViewModel(ioServiceMock.Object, xlIOServiceMock.Object, uiControlsServiceMock.Object);
+
+            sut.OutputDirectory = Path.Combine(debugDirectory, "XLSXFiles");
+            sut.DirectoryForXLSXExtractionFiles = Path.Combine(debugDirectory, "XLSXFiles");
+            sut.DataRetrievalRequests = new ObservableCollection<DataRetrievalRequest>();
+            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test", Column = 1, Row = 1 });
+            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test2", Column = 2, Row = 2 });
+            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test3", Column = 3, Row = 3 });
+            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test4", Column = 4, Row = 4 });
+            xlIOServiceMock.Setup(x => x.SaveWorkbook(It.IsAny<string>(), It.IsAny<ClosedXML.Excel.XLWorkbook>()))
+                .Returns(new Common.ReturnMessage(true, "workbook generated"));
+
+            Assert.That(sut.ExtractedDataTable, Is.Null);
+
+            await sut.BeginExtractionCommand.ExecuteAsync();
+
+            Assert.That(sut.ExtractedDataTable, Is.Not.Null);
+        }
         public void AssertCellValueForWorksheet(int row, int column,string expectedValue, ClosedXML.Excel.XLWorkbook generatedWorkbook)
         {
             Assert.That(generatedWorkbook.Worksheet(1).Cell(row, column).Value.ToString(), Is.EqualTo(expectedValue));
         }
+        
+        //TODO: Add DataTable unit test
     }
 }
