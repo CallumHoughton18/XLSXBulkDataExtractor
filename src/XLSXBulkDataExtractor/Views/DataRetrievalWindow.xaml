@@ -16,7 +16,7 @@
         TextElement.FontSize="14"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
         Title="Data Retrieval Window" MinHeight="500" MinWidth="800">
-    
+
     <Grid>
         <Grid.ColumnDefinitions>
         </Grid.ColumnDefinitions>
@@ -36,16 +36,24 @@
                                     <ColumnDefinition Width="0.3*"></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Center" Orientation="Horizontal">
-                                    <TextBox MinWidth="300" Width="400" Text="{Binding Path=OutputDirectory}" IsReadOnly="True"/>
+                                    
+                                    <TextBox materialDesign:HintAssist.Hint="Select an Output Directory: " MinWidth="300" Width="400" Text="{Binding Path=OutputDirectory}" IsReadOnly="True"/>
                                     <Button Style="{DynamicResource MaterialDesignFlatButton}" Content="{materialDesign:PackIcon Kind = Folder, Size=25}" Command="{Binding SetOutputDirectoryCommand}"/>
                                 </StackPanel>
 
-                                <ComboBox Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" ItemsSource="{Binding Path=OutputFormats}" SelectedItem="{Binding Path=ChosenOutputFormat}"/>
+                                <Grid Grid.Column="1" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition></ColumnDefinition>
+                                        <ColumnDefinition></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Output Format: " VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                                    <ComboBox Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" ItemsSource="{Binding Path=OutputFormats}" SelectedItem="{Binding Path=ChosenOutputFormat}"/>
+                                </Grid>
                             </Grid>
                         </materialDesign:Card.Content>
                     </materialDesign:Card>
                     <Image Source="/Images/XLSXExtractor.png" VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Row="1" Opacity="0.45" MaxHeight="100" Margin="20"/>
-                    
+
                     <Border Grid.Row="1" BorderThickness="0.5" BorderBrush="#4caf50" ClipToBounds="True" CornerRadius="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10">
                         <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                             <Grid.RowDefinitions>
@@ -63,6 +71,9 @@
                                 <e:Interaction.Behaviors>
                                     <customBehaviours:ScrollIntoViewBehavior/>
                                 </e:Interaction.Behaviors>
+                                <ListView.InputBindings>
+                                    <KeyBinding Key="Delete" Command="{Binding DeleteExtractionRequestCommand}"></KeyBinding>
+                                </ListView.InputBindings>
                                 <ListView.ItemContainerStyle>
                                     <Style TargetType="ListViewItem">
                                         <Setter Property="HorizontalContentAlignment"  Value="Stretch"></Setter>
