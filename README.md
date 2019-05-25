@@ -2,6 +2,8 @@
 
 This is a WPF application built to demonstrate the data extraction capabilities of the [XLSX Data Extractor library](https://github.com/CallumHoughton18/XLSXDataExtractor). 
 
+[![Build Status](https://dev.azure.com/callumhoughton13/callumhoughton13/_apis/build/status/CallumHoughton18.XLSXBulkDataExtractor?branchName=master)](https://dev.azure.com/callumhoughton13/callumhoughton13/_build/latest?definitionId=1&branchName=master)
+
 The use case for this application is mass data extraction from a directory of XLSX reports, all within the same style. The application allows you to input data retrieval commands; specifying the data retrieval commands field name, column location, and row location. As shown below. The column location can also be specified as either an integer or as the Excel lettering system.
 
 ![](<https://raw.githubusercontent.com/CallumHoughton18/XLSXBulkDataExtractor/master/media/screenshot1.png>)
