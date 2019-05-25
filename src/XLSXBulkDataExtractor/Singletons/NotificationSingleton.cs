@@ -14,6 +14,10 @@ namespace XLSXBulkDataExtractor.Singletons
     {
         private static readonly object padLock = new object();
         private static Notifier _notifierInstance = null;
+        /// <summary>
+        /// Gets the notifier instance in a thread safe manner.
+        /// </summary>
+        /// <value>The notifier instance.</value>
         public static Notifier NotifierInstance
         {
             get

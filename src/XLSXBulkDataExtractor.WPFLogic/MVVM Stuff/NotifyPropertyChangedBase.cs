@@ -7,6 +7,11 @@ using System.Threading.Tasks;
 
 namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
 {
+    /// <summary>
+    /// Class NotifyPropertyChangedBase.
+    /// Implements the <see cref="INotifyPropertyChanged" />
+    /// </summary>
+    /// <seealso cref="INotifyPropertyChanged" />
     public abstract class NotifyPropertyChangedBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;

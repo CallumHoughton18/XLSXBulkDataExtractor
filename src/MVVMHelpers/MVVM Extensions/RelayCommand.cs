@@ -5,6 +5,11 @@ using System.Windows.Input;
 
 namespace XLSXBulkDataExtractor.MVVMHelpers.MVVM_Extensions
 {
+    /// <summary>
+    /// Class RelayCommand.
+    /// Implements the <see cref="System.Windows.Input.ICommand" />. Specific to WPF.
+    /// </summary>
+    /// <seealso cref="System.Windows.Input.ICommand" />
     public class RelayCommand : ICommand
     {
         public delegate void ICommandOnExecute();

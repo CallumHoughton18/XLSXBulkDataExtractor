@@ -8,7 +8,12 @@ namespace XLSXBulkDataExtractor.Common
 {
     public static class ExcelUtilities
     {
-        public static int GetColumnNumbeFromColumnName(string columnName)
+        /// <summary>
+        /// Gets the number of the column from the name of the column in Excel column naming format, ie A, B, C, AA, BB, CC.
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <returns>System.Int32.</returns>
+        public static int GetColumnNumberFromColumnName(string columnName)
         {
             string columnNameUpper = columnName.ToUpperInvariant();
             int number = 0;

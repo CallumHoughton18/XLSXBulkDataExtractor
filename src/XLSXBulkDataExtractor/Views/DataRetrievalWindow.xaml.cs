@@ -10,21 +10,11 @@ namespace XLSXBulkDataExtractor
     /// </summary>
     public partial class DataRetrievalWindow : Window
     {
-        DataRetrievalViewModel vm;
-        public DataRetrievalWindow(IIOService ioService, IXLIOService xlioService, IUIControlsService uiControlsService)
+        DataRetrievalViewModel _vm;
+        public DataRetrievalWindow(DataRetrievalViewModel vm)
         {
             InitializeComponent();
-            DataContext = vm = new DataRetrievalViewModel(ioService, xlioService, uiControlsService);
-        }
-
-        private void ListView_LayoutUpdated(object sender, System.EventArgs e)
-        {
-            ListView listView = sender as ListView;
-
-            if (listView != null)
-            {
-                listView.ScrollIntoView(listView.Items[listView.Items.Count-1]);
-            }
+            DataContext = _vm = vm;
         }
     }
 }

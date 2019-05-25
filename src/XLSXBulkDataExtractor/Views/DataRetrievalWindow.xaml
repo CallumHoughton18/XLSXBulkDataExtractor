@@ -38,7 +38,7 @@
                                 <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Center" Orientation="Horizontal">
 
                                     <TextBox materialDesign:HintAssist.Hint="Excel Files Directory: " MinWidth="300" Width="400" Text="{Binding Path=OutputDirectory}" IsReadOnly="True"/>
-                                    <Button Style="{DynamicResource MaterialDesignFlatButton}" Content="{materialDesign:PackIcon Kind = Folder, Size=25}" Command="{Binding SetOutputDirectoryCommand}"/>
+                                    <Button Style="{DynamicResource MaterialDesignFlatButton}" Content="{materialDesign:PackIcon Kind = Folder, Size=25}" Command="{Binding SetDirectoryCommand}"/>
                                 </StackPanel>
 
                                 <Grid Grid.Column="1" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
@@ -67,7 +67,7 @@
                                 </WrapPanel>
                             </Border>
 
-                            <ListView Grid.Row="1" LayoutUpdated="ListView_LayoutUpdated" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" Margin="10" AllowDrop="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ItemsSource="{Binding DataRetrievalRequests}" SelectedItem="{Binding SelectedDataRetrievalRequest}">
+                            <ListView Grid.Row="1" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" Margin="10" AllowDrop="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ItemsSource="{Binding DataRetrievalRequests}" SelectedItem="{Binding SelectedDataRetrievalRequest}">
                                 <e:Interaction.Behaviors>
                                     <customBehaviours:ScrollIntoViewBehavior/>
                                 </e:Interaction.Behaviors>

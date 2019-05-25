@@ -21,6 +21,11 @@ using System.Data;
 
 namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
 {
+    /// <summary>
+    /// Class DataRetrievalViewModel.
+    /// Implements the <see cref="NotifyPropertyChangedBase" />
+    /// </summary>
+    /// <seealso cref="NotifyPropertyChangedBase" />
     public class DataRetrievalViewModel : NotifyPropertyChangedBase
     {
         private IIOService _ioService;
@@ -79,7 +84,7 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
             }
         }
         private string _outputDirectory;
-        public string OutputDirectory
+        public string ExtractionDirectory
         {
             get
             {
@@ -90,7 +95,7 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
                 if (_outputDirectory != value)
                 {
                     _outputDirectory = value;
-                    OnPropertyChanged(nameof(OutputDirectory));
+                    OnPropertyChanged(nameof(ExtractionDirectory));
                 }
             }
         }
@@ -129,6 +134,10 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets the<seealso cref="DataOutputFormat"/> enum as a collection.
+        /// </summary>
+        /// <value>The output formats.</value>
         public IEnumerable<DataOutputFormat> OutputFormats
         {
             get
@@ -141,10 +150,26 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
 
         public ObservableCollection<DataRetrievalRequest> DataRetrievalRequests { get; set; } = new ObservableCollection<DataRetrievalRequest>();
 
+        /// <summary>
+        /// Gets the add extraction request command. Adds an empty <seealso cref="DataRetrievalRequest"/> object to the <see cref="DataRetrievalRequests"/> collection.
+        /// </summary>
+        /// <value>The add extraction request command.</value>
         public ICommand AddExtractionRequestCommand { get; private set; }
+        /// <summary>
+        /// Gets the delete extraction request command.Removes the <seealso cref="SelectedDataRetrievalRequest"/> object from the<see cref="DataRetrievalRequests"/> collection.
+        /// </summary>
+        /// <value>The delete extraction request command.</value>
         public ICommand DeleteExtractionRequestCommand { get; private set; }
+        /// <summary>
+        /// Gets the begin extraction command. Begins extraction of Excel files in <see cref="ExtractionDirectory"/> using the <see cref="DataRetrievalRequests"/>
+        /// </summary>
+        /// <value>The begin extraction command.</value>
         public IAsyncCommand BeginExtractionCommand { get; private set; }
-        public ICommand SetOutputDirectoryCommand { get; private set; }
+        /// <summary>
+        /// Gets the set output directory command. Sets the <see cref="ExtractionDirectory"/> for Excel files. This directory is also used as the output directory for the extracted data.
+        /// </summary>
+        /// <value>The set output directory command.</value>
+        public ICommand SetDirectoryCommand { get; private set; }
         public Progress<IEnumerable<ReturnMessage>> ExtractionProgressEvent { get; } = new Progress<IEnumerable<ReturnMessage>>();
 
         public DataRetrievalViewModel(IIOService ioService, IXLIOService xlioService, IUIControlsService uiControlsService)
@@ -156,19 +181,19 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
             AddExtractionRequestCommand = new RelayCommand(() => AddNewEmptyExtractionRequest());
             DeleteExtractionRequestCommand = new RelayCommand(() => DeleteExtractionRequest());
             BeginExtractionCommand = new AsyncCommand(async () => await BeginExtraction());
-            SetOutputDirectoryCommand = new RelayCommand(() => SetOutputDirectory());
+            SetDirectoryCommand = new RelayCommand(() => SetOutputDirectory());
 
             ExtractionProgressEvent = new Progress<IEnumerable<ReturnMessage>>();
             ExtractionProgressEvent.ProgressChanged += ExtractionProgress_ProgressChanged;
         }
 
         #region Methods For Commands
-        private void AddNewEmptyExtractionRequest()
+        protected void AddNewEmptyExtractionRequest()
         {
             DataRetrievalRequests.Add(new DataRetrievalRequest());
         }
 
-        private void DeleteExtractionRequest()
+        protected void DeleteExtractionRequest()
         {
             try
             {
@@ -184,12 +209,12 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
             }
         }
 
-        private async Task BeginExtraction()
+        protected async Task BeginExtraction()
         {
 
             try
             {
-                if (string.IsNullOrWhiteSpace(OutputDirectory)) throw new ArgumentNullException(nameof(OutputDirectory),"cannot be null or empty");
+                if (string.IsNullOrWhiteSpace(ExtractionDirectory)) throw new ArgumentNullException(nameof(ExtractionDirectory),"cannot be null or empty");
 
                 if (_extractionCancellationTokenSource != null)
                 {
@@ -198,7 +223,7 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
                 }
                 _extractionCancellationTokenSource = new CancellationTokenSource();
 
-                var successfulExtractions = await ExtractDataFromFiles(new DirectoryInfo(OutputDirectory), ChosenOutputFormat, ExtractionProgressEvent, _extractionCancellationTokenSource.Token);
+                var successfulExtractions = await ExtractDataFromFiles(new DirectoryInfo(ExtractionDirectory), ChosenOutputFormat, ExtractionProgressEvent, _extractionCancellationTokenSource.Token);
 
                 ExtractionProgress = 0;
 
@@ -211,7 +236,7 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
             }
             catch (ArgumentNullException e)
             {
-                if (e.ParamName.ToLower() == "documentsdirectory" || e.ParamName == nameof(OutputDirectory)) _uiControlsService.DisplayAlert("No output directory set", MessageType.Error);
+                if (e.ParamName.ToLower() == "documentsdirectory" || e.ParamName == nameof(ExtractionDirectory)) _uiControlsService.DisplayAlert("No output directory set", MessageType.Error);
             }
             catch (NoDataOutputtedException e)
             {
@@ -226,16 +251,16 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
             }
         }
 
-        private void ExtractionProgress_ProgressChanged(object sender, IEnumerable<ReturnMessage> e)
+        protected void ExtractionProgress_ProgressChanged(object sender, IEnumerable<ReturnMessage> e)
         {
             ExtractionProgress += 1;
         }
 
-        public void SetOutputDirectory()
+        protected void SetOutputDirectory()
         {
             var chosenPath = SetOutputDirectoryFromIOService();
 
-            if (!string.IsNullOrWhiteSpace(chosenPath)) OutputDirectory = chosenPath;
+            if (!string.IsNullOrWhiteSpace(chosenPath)) ExtractionDirectory = chosenPath;
         }
         #endregion
 
@@ -264,6 +289,7 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
 
             await Task.Run(() =>
             {
+                //filter files to valid extensions, and ignore temporary Excel files if excel file is open.
                 var documents = documentsDirectory.GetFiles().Where(x => validExtensions.Contains(Path.GetExtension(x.FullName).ToLower()) && !x.Name.StartsWith(@"~$"));
                 TotalExtractionCount = documents.Count();
 
@@ -316,14 +342,14 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
                     extractedDataTable.TableName = "ExtractedData";
                     var newWorkbook = new XLWorkbook();
                     newWorkbook.AddWorksheet(extractedDataTable);
-                    succesfullySaved = _xlioService.SaveWorkbook(Path.Combine(OutputDirectory,$"{DateTime.Now.Ticks} Output.xlsx"), newWorkbook);
+                    succesfullySaved = _xlioService.SaveWorkbook(Path.Combine(ExtractionDirectory,$"{DateTime.Now.Ticks} Output.xlsx"), newWorkbook);
                     DisplaySuccessOrFailMessage(succesfullySaved);
 
                     break;
                 case DataOutputFormat.CSV:
                     extractedDataTable = ExtractedDataConverter.GenerateDataTable(extractedDataCol);
                     var generatedCSV = ExtractedDataConverter.ConvertToCSV(extractedDataTable);
-                    succesfullySaved = _ioService.SaveText(generatedCSV, Path.Combine(OutputDirectory, $"{DateTime.Now.Ticks} Output.csv"));
+                    succesfullySaved = _ioService.SaveText(generatedCSV, Path.Combine(ExtractionDirectory, $"{DateTime.Now.Ticks} Output.csv"));
                     DisplaySuccessOrFailMessage(succesfullySaved);
 
                     break;

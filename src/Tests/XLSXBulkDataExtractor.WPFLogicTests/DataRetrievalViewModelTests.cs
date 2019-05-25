@@ -76,9 +76,9 @@ namespace XLSXBulkDataExtractor.WPFLogicTests
             DataRetrievalViewModel sut = new DataRetrievalViewModel(ioServiceMock.Object, xlIOServiceMock.Object, uiControlsServiceMock.Object);
             ioServiceMock.Setup(x => x.ChooseFolderDialog()).Returns("test/path");
 
-            sut.SetOutputDirectoryCommand.Execute(null);
+            sut.SetDirectoryCommand.Execute(null);
 
-            Assert.That(sut.OutputDirectory, Is.EqualTo("test/path"));
+            Assert.That(sut.ExtractionDirectory, Is.EqualTo("test/path"));
         }
 
         [Test]
@@ -87,9 +87,9 @@ namespace XLSXBulkDataExtractor.WPFLogicTests
             DataRetrievalViewModel sut = new DataRetrievalViewModel(ioServiceMock.Object, xlIOServiceMock.Object, uiControlsServiceMock.Object);
             ioServiceMock.Setup(x => x.ChooseFolderDialog()).Returns("");
 
-            sut.SetOutputDirectoryCommand.Execute(null);
+            sut.SetDirectoryCommand.Execute(null);
 
-            Assert.That(sut.OutputDirectory, Is.Null);
+            Assert.That(sut.ExtractionDirectory, Is.Null);
         }
 
         [Test]
@@ -97,7 +97,7 @@ namespace XLSXBulkDataExtractor.WPFLogicTests
         {
             ClosedXML.Excel.XLWorkbook generatedWorkbook = null;
             DataRetrievalViewModel sut = new DataRetrievalViewModel(ioServiceMock.Object, xlIOServiceMock.Object, uiControlsServiceMock.Object);
-            sut.OutputDirectory = Path.Combine(debugDirectory, "XLSXFiles");
+            sut.ExtractionDirectory = Path.Combine(debugDirectory, "XLSXFiles");
             sut.DirectoryForXLSXExtractionFiles = Path.Combine(debugDirectory, "XLSXFiles");
             sut.DataRetrievalRequests = new ObservableCollection<DataRetrievalRequest>();
             sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test", ColumnName = 1.ToString(), Row = 1 });
@@ -113,8 +113,6 @@ namespace XLSXBulkDataExtractor.WPFLogicTests
 
 
         }
-
-        //TODO: Add in unit tests for task progress tracking
 
         [Test]
         public async Task ExtractDataNoOutputDirectory()
@@ -148,7 +146,7 @@ namespace XLSXBulkDataExtractor.WPFLogicTests
                 timesExtractionProgressEventFired += 1;
             };
 
-            sut.OutputDirectory = Path.Combine(debugDirectory, "XLSXFiles");
+            sut.ExtractionDirectory = Path.Combine(debugDirectory, "XLSXFiles");
             sut.DirectoryForXLSXExtractionFiles = Path.Combine(debugDirectory, "XLSXFiles");
             sut.DataRetrievalRequests = new ObservableCollection<DataRetrievalRequest>();
             sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test", ColumnName = 1.ToString(), Row = 1 });
@@ -171,7 +169,7 @@ namespace XLSXBulkDataExtractor.WPFLogicTests
 
             DataRetrievalViewModel sut = new DataRetrievalViewModel(ioServiceMock.Object, xlIOServiceMock.Object, uiControlsServiceMock.Object);
 
-            sut.OutputDirectory = Path.Combine(debugDirectory, "XLSXFiles");
+            sut.ExtractionDirectory = Path.Combine(debugDirectory, "XLSXFiles");
             sut.DirectoryForXLSXExtractionFiles = Path.Combine(debugDirectory, "XLSXFiles");
             sut.DataRetrievalRequests = new ObservableCollection<DataRetrievalRequest>();
             sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test", ColumnName = 1.ToString(), Row = 1 });
@@ -192,6 +190,5 @@ namespace XLSXBulkDataExtractor.WPFLogicTests
             Assert.That(generatedWorkbook.Worksheet(1).Cell(row, column).Value.ToString(), Is.EqualTo(expectedValue));
         }
         
-        //TODO: Add DataTable unit test
     }
 }

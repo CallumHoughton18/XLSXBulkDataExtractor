@@ -79,7 +79,7 @@ namespace XLSXBulkDataExtractor.WPFLogicTests
             var sut = new DataRetrievalRequest();
             sut.ColumnName = "!TEST!FALSE!";
 
-            Assert.That(sut.ColumnNumber, Is.EqualTo(1)); //ie hasn't changed
+            Assert.That(sut.ColumnNumber, Is.EqualTo(1)); //check value has not changed
         }
 
         [Test]

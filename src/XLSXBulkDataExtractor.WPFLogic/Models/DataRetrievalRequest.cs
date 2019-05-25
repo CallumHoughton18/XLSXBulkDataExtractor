@@ -18,6 +18,10 @@ namespace XLSXBulkDataExtractor.WPFLogic.Models
             }
         }
         private string _columnName = "A";
+        /// <summary>
+        /// Gets or sets the name of the column. Also sets the private field <seealso cref="_columnNumber"/> which is the integer equivalent of the column name.
+        /// </summary>
+        /// <value>The name of the column.</value>
         public string ColumnName
         {
             get
@@ -37,7 +41,7 @@ namespace XLSXBulkDataExtractor.WPFLogic.Models
 
                         if (allLetters)
                         {
-                            columnNumber = ExcelUtilities.GetColumnNumbeFromColumnName(value);
+                            columnNumber = ExcelUtilities.GetColumnNumberFromColumnName(value);
                             successfulParsing = true;
                         }
                     }
