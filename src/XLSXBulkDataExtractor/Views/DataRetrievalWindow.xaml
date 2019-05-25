@@ -37,7 +37,7 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Center" Orientation="Horizontal">
 
-                                    <TextBox materialDesign:HintAssist.Hint="Excel Files Directory: " MinWidth="300" Width="400" Text="{Binding Path=OutputDirectory}" IsReadOnly="True"/>
+                                    <TextBox materialDesign:HintAssist.Hint="Excel Files Directory: " MinWidth="300" Width="400" Text="{Binding Path=ExtractionDirectory}" IsReadOnly="True"/>
                                     <Button Style="{DynamicResource MaterialDesignFlatButton}" Content="{materialDesign:PackIcon Kind = Folder, Size=25}" Command="{Binding SetDirectoryCommand}"/>
                                 </StackPanel>
 
