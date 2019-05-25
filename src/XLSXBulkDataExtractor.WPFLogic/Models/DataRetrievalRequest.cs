@@ -7,7 +7,7 @@ namespace XLSXBulkDataExtractor.WPFLogic.Models
 {
     public class DataRetrievalRequest : NotifyPropertyChangedBase
     {
-        private int _column;
+        private int _column = 1;
         public int Column
         {
             get
@@ -23,7 +23,7 @@ namespace XLSXBulkDataExtractor.WPFLogic.Models
                 }
             }
         }
-        private int _row;
+        private int _row = 1;
         public int Row
         {
             get

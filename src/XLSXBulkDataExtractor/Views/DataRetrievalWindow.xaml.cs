@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using XLSXBulkDataExtractor.WPFLogic.Interfaces;
 using XLSXBulkDataExtractor.WPFLogic.ViewModels;
 
@@ -14,6 +15,16 @@ namespace XLSXBulkDataExtractor
         {
             InitializeComponent();
             DataContext = vm = new DataRetrievalViewModel(ioService, xlioService, uiControlsService);
+        }
+
+        private void ListView_LayoutUpdated(object sender, System.EventArgs e)
+        {
+            ListView listView = sender as ListView;
+
+            if (listView != null)
+            {
+                listView.ScrollIntoView(listView.Items[listView.Items.Count-1]);
+            }
         }
     }
 }
