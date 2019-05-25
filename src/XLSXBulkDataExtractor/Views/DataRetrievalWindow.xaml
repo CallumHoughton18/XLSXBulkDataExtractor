@@ -6,6 +6,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
         xmlns:local="clr-namespace:XLSXBulkDataExtractor"
+        xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         Background="{DynamicResource MaterialDesignPaper}"
@@ -51,7 +52,7 @@
                                     <Button  Style="{DynamicResource MaterialDesignFlatButton}" MinWidth="25" Command="{Binding DeleteExtractionRequestCommand}" Content="{materialDesign:PackIcon Kind = Minus, Size= 14}"></Button>
                                 </WrapPanel>
                             </Border>
-                            <ListView Margin="10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ItemsSource="{Binding DataRetrievalRequests}" SelectedItem="{Binding SelectedDataRetrievalRequest}">
+                            <ListView dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" Margin="10" AllowDrop="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ItemsSource="{Binding DataRetrievalRequests}" SelectedItem="{Binding SelectedDataRetrievalRequest}">
                                 <ListView.ItemContainerStyle>
                                     <Style TargetType="ListViewItem">
                                         <Setter Property="HorizontalContentAlignment"  Value="Stretch"></Setter>
