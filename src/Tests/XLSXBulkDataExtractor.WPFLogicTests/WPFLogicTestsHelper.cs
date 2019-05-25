@@ -13,7 +13,7 @@ namespace XLSXBulkDataExtractor.WPFLogicTests
         {
             for (int i = 0; i < 3; i++)
             {
-                yield return new DataRetrievalRequest { Column = i, Row = i, FieldName = $"MockFieldName{i}" };
+                yield return new DataRetrievalRequest { ColumnName = i.ToString(), Row = i, FieldName = $"MockFieldName{i}" };
             }
         }
     }

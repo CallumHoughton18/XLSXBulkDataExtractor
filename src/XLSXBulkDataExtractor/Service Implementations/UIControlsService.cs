@@ -32,6 +32,9 @@ namespace XLSXBulkDataExtractor.Service_Implementations
                 case MessageType.Error:
                     _notifier.ShowError(message);
                     break;
+                case MessageType.Success:
+                    _notifier.ShowSuccess(message);
+                    break;
                 default:
                     break;
             }

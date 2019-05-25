@@ -36,8 +36,8 @@
                                     <ColumnDefinition Width="0.3*"></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Center" Orientation="Horizontal">
-                                    
-                                    <TextBox materialDesign:HintAssist.Hint="Select an Output Directory: " MinWidth="300" Width="400" Text="{Binding Path=OutputDirectory}" IsReadOnly="True"/>
+
+                                    <TextBox materialDesign:HintAssist.Hint="Excel Files Directory: " MinWidth="300" Width="400" Text="{Binding Path=OutputDirectory}" IsReadOnly="True"/>
                                     <Button Style="{DynamicResource MaterialDesignFlatButton}" Content="{materialDesign:PackIcon Kind = Folder, Size=25}" Command="{Binding SetOutputDirectoryCommand}"/>
                                 </StackPanel>
 
@@ -82,7 +82,7 @@
 
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
-                                        <GroupBox Background="#f9f9f9">
+                                        <GroupBox Background="#f9f9f9" >
                                             <GroupBox.Effect>
                                                 <DropShadowEffect Opacity="0.2" BlurRadius="20"></DropShadowEffect>
                                             </GroupBox.Effect>
@@ -93,7 +93,7 @@
                                                 </WrapPanel>
                                                 <WrapPanel Margin="0,2">
                                                     <Label Grid.Row="1" Content="Column: " MinWidth="50" MaxWidth="100" Width="85"/>
-                                                    <TextBox Grid.Row="1" Grid.Column="1" MinWidth="50"  MaxWidth="100" Text="{Binding Path=Column}"/>
+                                                    <TextBox Grid.Row="1" Grid.Column="1" MinWidth="50"  MaxWidth="100" Text="{Binding Path=ColumnName, Mode=TwoWay}"/>
                                                 </WrapPanel>
                                                 <WrapPanel Margin="0,2">
                                                     <Label Grid.Row="2" Content="Row: " MinWidth="50" MaxWidth="100" Width="85"/>
@@ -122,7 +122,7 @@
             </TabItem>
             <TabItem Header="Data Viewer">
                 <Grid>
-                    <DataGrid Name="Extracted_Data" ItemsSource="{Binding ExtractedDataTable}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                    <DataGrid Name="Extracted_Data" ItemsSource="{Binding ExtractedDataTable}" IsReadOnly="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
                 </Grid>
             </TabItem>
         </dragablz:TabablzControl>

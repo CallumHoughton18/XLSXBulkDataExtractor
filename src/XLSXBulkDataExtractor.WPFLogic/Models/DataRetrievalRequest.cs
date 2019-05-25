@@ -1,25 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using XLSXBulkDataExtractor.Common;
 using XLSXBulkDataExtractor.WPFLogic.ViewModels;
 
 namespace XLSXBulkDataExtractor.WPFLogic.Models
 {
     public class DataRetrievalRequest : NotifyPropertyChangedBase
     {
-        private int _column = 1;
-        public int Column
+        private int _columnNumber = 1;
+        public int ColumnNumber
         {
             get
             {
-                return _column;
+                return _columnNumber;
+            }
+        }
+        private string _columnName = "A";
+        public string ColumnName
+        {
+            get
+            {
+                return _columnName;
             }
             set
             {
-                if (_column != value)
+                if (_columnName != value)
                 {
-                    _column = value;
-                    OnPropertyChanged(nameof(Column));
+                    int columnNumber;
+                    bool successfulParsing = false;
+
+                    if (!int.TryParse(value, out columnNumber))
+                    {
+                        bool allLetters = value.All(char.IsLetter);
+
+                        if (allLetters)
+                        {
+                            columnNumber = ExcelUtilities.GetColumnNumbeFromColumnName(value);
+                            successfulParsing = true;
+                        }
+                    }
+                    else successfulParsing = true;
+
+                    if (successfulParsing)
+                    {
+                        _columnName = value;
+                        _columnNumber = columnNumber;
+                    }
+                    
+
+                    OnPropertyChanged(nameof(ColumnName));
                 }
             }
         }

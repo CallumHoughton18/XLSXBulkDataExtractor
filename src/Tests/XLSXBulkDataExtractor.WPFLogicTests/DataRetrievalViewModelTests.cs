@@ -29,8 +29,8 @@ namespace XLSXBulkDataExtractor.WPFLogicTests
 
             Assert.That(sut.DataRetrievalRequests.Count, Is.EqualTo(1));
 
-            Assert.That(sut.DataRetrievalRequests[0].Column, Is.EqualTo(0));
-            Assert.That(sut.DataRetrievalRequests[0].Column, Is.EqualTo(0));
+            Assert.That(sut.DataRetrievalRequests[0].ColumnNumber, Is.EqualTo(1));
+            Assert.That(sut.DataRetrievalRequests[0].ColumnNumber, Is.EqualTo(1));
             Assert.That(sut.DataRetrievalRequests[0].FieldName, Is.EqualTo(null));
         }
 
@@ -100,8 +100,8 @@ namespace XLSXBulkDataExtractor.WPFLogicTests
             sut.OutputDirectory = Path.Combine(debugDirectory, "XLSXFiles");
             sut.DirectoryForXLSXExtractionFiles = Path.Combine(debugDirectory, "XLSXFiles");
             sut.DataRetrievalRequests = new ObservableCollection<DataRetrievalRequest>();
-            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test", Column = 1, Row = 1 });
-            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test2", Column = 2, Row = 2 });
+            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test", ColumnName = 1.ToString(), Row = 1 });
+            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test2", ColumnName = 2.ToString(), Row = 2 });
             xlIOServiceMock.Setup(x => x.SaveWorkbook(It.IsAny<string>(), It.IsAny<ClosedXML.Excel.XLWorkbook>()))
                 .Callback<string, ClosedXML.Excel.XLWorkbook>((path, workbook) => generatedWorkbook = workbook)
                 .Returns(new Common.ReturnMessage(true, "workbook generated"));
@@ -123,10 +123,10 @@ namespace XLSXBulkDataExtractor.WPFLogicTests
             DataRetrievalViewModel sut = new DataRetrievalViewModel(ioServiceMock.Object, xlIOServiceMock.Object, uiControlsServiceMock.Object);
             sut.DirectoryForXLSXExtractionFiles = Path.Combine(debugDirectory, "XLSXFiles");
             sut.DataRetrievalRequests = new ObservableCollection<DataRetrievalRequest>();
-            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test", Column = 1, Row = 1 });
-            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test2", Column = 2, Row = 2 });
-            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test3", Column = 3, Row = 3 });
-            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test4", Column = 4, Row = 4 });
+            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test", ColumnName = 1.ToString(), Row = 1 });
+            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test2", ColumnName = 2.ToString(), Row = 2 });
+            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test3", ColumnName = 3.ToString(), Row = 3 });
+            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test4", ColumnName = 4.ToString(), Row = 4 });
             xlIOServiceMock.Setup(x => x.SaveWorkbook(It.IsAny<string>(), It.IsAny<ClosedXML.Excel.XLWorkbook>()))
                 .Callback<string, ClosedXML.Excel.XLWorkbook>((path, workbook) => generatedWorkbook = workbook)
                 .Returns(new Common.ReturnMessage(true, "workbook generated"));
@@ -151,10 +151,10 @@ namespace XLSXBulkDataExtractor.WPFLogicTests
             sut.OutputDirectory = Path.Combine(debugDirectory, "XLSXFiles");
             sut.DirectoryForXLSXExtractionFiles = Path.Combine(debugDirectory, "XLSXFiles");
             sut.DataRetrievalRequests = new ObservableCollection<DataRetrievalRequest>();
-            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test", Column = 1, Row = 1 });
-            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test2", Column = 2, Row = 2 });
-            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test3", Column = 3, Row = 3 });
-            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test4", Column = 4, Row = 4 });
+            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test", ColumnName = 1.ToString(), Row = 1 });
+            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test2", ColumnName = 2.ToString(), Row = 2 });
+            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test3", ColumnName = 3.ToString(), Row = 3 });
+            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test4", ColumnName = 4.ToString(), Row = 4 });
             xlIOServiceMock.Setup(x => x.SaveWorkbook(It.IsAny<string>(), It.IsAny<ClosedXML.Excel.XLWorkbook>()))
                 .Returns(new Common.ReturnMessage(true, "workbook generated"));
 
@@ -174,10 +174,10 @@ namespace XLSXBulkDataExtractor.WPFLogicTests
             sut.OutputDirectory = Path.Combine(debugDirectory, "XLSXFiles");
             sut.DirectoryForXLSXExtractionFiles = Path.Combine(debugDirectory, "XLSXFiles");
             sut.DataRetrievalRequests = new ObservableCollection<DataRetrievalRequest>();
-            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test", Column = 1, Row = 1 });
-            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test2", Column = 2, Row = 2 });
-            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test3", Column = 3, Row = 3 });
-            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test4", Column = 4, Row = 4 });
+            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test", ColumnName = 1.ToString(), Row = 1 });
+            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test2", ColumnName = 2.ToString(), Row = 2 });
+            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test3", ColumnName = 3.ToString(), Row = 3 });
+            sut.DataRetrievalRequests.Add(new DataRetrievalRequest { FieldName = "Test4", ColumnName = 4.ToString(), Row = 4 });
             xlIOServiceMock.Setup(x => x.SaveWorkbook(It.IsAny<string>(), It.IsAny<ClosedXML.Excel.XLWorkbook>()))
                 .Returns(new Common.ReturnMessage(true, "workbook generated"));
 

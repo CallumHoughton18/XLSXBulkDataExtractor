@@ -200,14 +200,14 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
 
                 var successfulExtractions = await ExtractDataFromFiles(new DirectoryInfo(OutputDirectory), ChosenOutputFormat, ExtractionProgressEvent, _extractionCancellationTokenSource.Token);
 
+                ExtractionProgress = 0;
+
                 if (successfulExtractions.Any(x => x.Success == false))
                 {
                     throw new ExtractionFailedException("Some extractions were unsuccessful...",
                                                         "Full Extraction Unsuccessful",
                                                         successfulExtractions.Where(x => x.Success == false).Select(y => y.Message));
                 }
-
-                ExtractionProgress = 0;
             }
             catch (ArgumentNullException e)
             {
@@ -219,8 +219,10 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
             }
             catch (ExtractionFailedException e)
             {
-                string alertBody = string.Join(Environment.NewLine, e.FailedExtractionMessages.Select(msg => string.Join(", ", msg)));
-                _uiControlsService.DisplayAlert(alertBody, MessageType.Error);
+                foreach (var failedExtractionMessage in e.FailedExtractionMessages)
+                {
+                    _uiControlsService.DisplayAlert(failedExtractionMessage, MessageType.Error);
+                }
             }
         }
 
@@ -262,7 +264,7 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
 
             await Task.Run(() =>
             {
-                var documents = documentsDirectory.GetFiles().Where(x => validExtensions.Contains(Path.GetExtension(x.FullName).ToLower()));
+                var documents = documentsDirectory.GetFiles().Where(x => validExtensions.Contains(Path.GetExtension(x.FullName).ToLower()) && !x.Name.StartsWith(@"~$"));
                 TotalExtractionCount = documents.Count();
 
                 Parallel.ForEach(documents, (document) =>
@@ -336,7 +338,7 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
         {
             if (returnMessage == null) throw new ArgumentNullException("returnMessage", "cannot be null");
 
-            if (returnMessage.Success) _uiControlsService.DisplayAlert(returnMessage.Message, MessageType.Information);
+            if (returnMessage.Success) _uiControlsService.DisplayAlert(returnMessage.Message, MessageType.Success);
 
             else _uiControlsService.DisplayAlert(returnMessage.Message, MessageType.Error);
 
@@ -346,7 +348,7 @@ namespace XLSXBulkDataExtractor.WPFLogic.ViewModels
         {
             foreach (var dataRetrievalRequest in dataRetrievalRequestsCol)
             {
-                yield return new ExtractionRequest(dataRetrievalRequest.FieldName, dataRetrievalRequest.Row, dataRetrievalRequest.Column);
+                yield return new ExtractionRequest(dataRetrievalRequest.FieldName, dataRetrievalRequest.Row, dataRetrievalRequest.ColumnNumber);
             }
         }
     }
